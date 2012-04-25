@@ -31,7 +31,7 @@ public class BulletDemo implements Game {
     Graphics graphics = PlayN.graphics();
     graphics.setSize(800, 600);
     
-    IGL gl = new IGLImpl(graphics.gl20(), assets().getImage("images/font.png"));
+    IGL gl = new IGLImpl(graphics.gl20());
     demoApp = new BasicDemo(gl);
     
     try {

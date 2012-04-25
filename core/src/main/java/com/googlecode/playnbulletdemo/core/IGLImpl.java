@@ -20,19 +20,19 @@ public class IGLImpl implements IGL {
   GL11FixedFunctionEmulation gl;
   Tesselator tesselator = new Tesselator(1000);
   boolean tesselating;
-  int fontTexture;
-  Image fontImage;
-  boolean fontLoaded;
+  Texture fontTexture;
+  Texture cubeTexture;
   
-  public IGLImpl(GL20 gl20, Image font) {
+  
+  public IGLImpl(GL20 gl20) {
     gl = new GL11FixedFunctionEmulation(gl20);
-    fontImage = font;
     
-    ByteBuffer byteBuffer = ByteBuffer.allocateDirect(4);
+    ByteBuffer byteBuffer = ByteBuffer.allocateDirect(8);
     byteBuffer.order(ByteOrder.nativeOrder());
     IntBuffer intBuffer = byteBuffer.asIntBuffer();
-    gl.glGenTextures(1, intBuffer);
-    fontTexture = intBuffer.get(0);
+    gl.glGenTextures(2, intBuffer);
+    fontTexture = new Texture(PlayN.assets().getImage("images/font.png"), intBuffer.get(0));
+    cubeTexture = new Texture(PlayN.assets().getImage("images/cube.png"), intBuffer.get(1));
   }
   
 
@@ -134,15 +134,75 @@ public class IGLImpl implements IGL {
   public void drawCube(float extent) {
     extent = extent * 0.5f;
     
+    cubeTexture.load(gl);
+    
     glBegin(GL_QUADS);
-    glNormal3f( 1f, 0f, 0f); glVertex3f(+extent,-extent,+extent); glVertex3f(+extent,-extent,-extent); glVertex3f(+extent,+extent,-extent); glVertex3f(+extent,+extent,+extent);
-    glNormal3f( 0f, 1f, 0f); glVertex3f(+extent,+extent,+extent); glVertex3f(+extent,+extent,-extent); glVertex3f(-extent,+extent,-extent); glVertex3f(-extent,+extent,+extent);
-    glNormal3f( 0f, 0f, 1f); glVertex3f(+extent,+extent,+extent); glVertex3f(-extent,+extent,+extent); glVertex3f(-extent,-extent,+extent); glVertex3f(+extent,-extent,+extent);
-    glNormal3f(-1f, 0f, 0f); glVertex3f(-extent,-extent,+extent); glVertex3f(-extent,+extent,+extent); glVertex3f(-extent,+extent,-extent); glVertex3f(-extent,-extent,-extent);
-    glNormal3f( 0f,-1f, 0f); glVertex3f(-extent,-extent,+extent); glVertex3f(-extent,-extent,-extent); glVertex3f(+extent,-extent,-extent); glVertex3f(+extent,-extent,+extent);
-    glNormal3f( 0f, 0f,-1f); glVertex3f(-extent,-extent,-extent); glVertex3f(-extent,+extent,-extent); glVertex3f(+extent,+extent,-extent); glVertex3f(+extent,-extent,-extent);
+    glNormal3f( 1f, 0f, 0f);
+    glTexCoord2f(0, 0);
+    glVertex3f(+extent,-extent,+extent); 
+    glTexCoord2f(1, 0);
+    glVertex3f(+extent,-extent,-extent); 
+    glTexCoord2f(1, 1);
+    glVertex3f(+extent,+extent,-extent); 
+    glTexCoord2f(0, 1);
+    glVertex3f(+extent,+extent,+extent);
+    
+    glNormal3f( 0f, 1f, 0f); 
+    glTexCoord2f(0, 0);
+    glVertex3f(+extent,+extent,+extent); 
+    glTexCoord2f(1, 0);
+    glVertex3f(+extent,+extent,-extent); 
+    glTexCoord2f(1, 1);
+    glVertex3f(-extent,+extent,-extent); 
+    glTexCoord2f(0, 1);
+    glVertex3f(-extent,+extent,+extent);
+
+    glNormal3f( 0f, 0f, 1f); 
+    glTexCoord2f(0, 0);
+    glVertex3f(+extent,+extent,+extent); 
+    glTexCoord2f(1, 0);
+    glVertex3f(-extent,+extent,+extent); 
+    glTexCoord2f(1, 1);
+    glVertex3f(-extent,-extent,+extent); 
+    glTexCoord2f(0, 1);
+    glVertex3f(+extent,-extent,+extent);
+
+    glNormal3f(-1f, 0f, 0f); 
+    glTexCoord2f(0, 0);
+    glVertex3f(-extent,-extent,+extent); 
+    glTexCoord2f(1, 0);
+    glVertex3f(-extent,+extent,+extent); 
+    glTexCoord2f(1, 1);
+    glVertex3f(-extent,+extent,-extent); 
+    glTexCoord2f(0, 1);
+    glVertex3f(-extent,-extent,-extent);
+    
+    glNormal3f( 0f,-1f, 0f); 
+    glTexCoord2f(0, 0);
+    glVertex3f(-extent,-extent,+extent); 
+    glTexCoord2f(1, 0);
+    glVertex3f(-extent,-extent,-extent); 
+    glTexCoord2f(1, 1);
+    glVertex3f(+extent,-extent,-extent); 
+    glTexCoord2f(0, 1);
+    glVertex3f(+extent,-extent,+extent);
+
+    glNormal3f( 0f, 0f,-1f); 
+    glTexCoord2f(0, 0);
+    glVertex3f(-extent,-extent,-extent); 
+    glTexCoord2f(1, 0);
+    glVertex3f(-extent,+extent,-extent); 
+    glTexCoord2f(1, 1);
+    glVertex3f(+extent,+extent,-extent); 
+    glTexCoord2f(0, 1);
+    glVertex3f(+extent,-extent,-extent);
     glEnd();
   }
+
+  private void glTexCoord2f(float s, float t) {
+    tesselator.texCoord2f(s, t);
+  }
+
 
   @Override
   public void drawSphere(float radius, int slices, int stacks) {
@@ -156,35 +216,12 @@ public class IGLImpl implements IGL {
     drawCube(radius);
   }
 
-  void loadFontTexture() {
-    int [] argbArray = new int[fontImage.width() * fontImage.height()];
-    fontImage.getRgb(0, 0, fontImage.width(), fontImage.height(), argbArray, 0, fontImage.width());
-    
-    ByteBuffer byteBuffer = ByteBuffer.allocateDirect(Math.max(65536, fontImage.width() * fontImage.height()) * 4);
-    byteBuffer.order(ByteOrder.nativeOrder());
-    IntBuffer rgbaBuffer = byteBuffer.asIntBuffer();
-    
-    for(int i = 0; i < argbArray.length; i++) {
-      int argb = argbArray[i];
-      rgbaBuffer.put(i, (argb << 8) | (argb >>> 24));
-    }
-    
-    gl.glBindTexture(GL11.GL_TEXTURE_2D, fontTexture);
-    gl.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_MIN_FILTER, GL11.GL_LINEAR);
-    gl.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_MAG_FILTER, GL11.GL_LINEAR);
-    gl.glTexImage2D(GL11.GL_TEXTURE_2D, 0, GL11.GL_RGBA, fontImage.width(), fontImage.height(), 0, GL11.GL_RGBA, GL11.GL_UNSIGNED_BYTE, rgbaBuffer);
-  }
+  
   
   @Override
   public void drawString(CharSequence text, int x, int y, float red, float green,
       float blue) {
-    if (!fontLoaded) {
-      if (!fontImage.isReady()) {
-        return;
-      }
-      loadFontTexture();
-      fontLoaded = true;
-    }
+    fontTexture.load(gl);
     
     gl.glEnable(GL11.GL_BLEND);
     gl.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
@@ -192,8 +229,7 @@ public class IGLImpl implements IGL {
     gl.glPushMatrix();
     gl.glTranslatef(x, y, 0);
     
-    gl.glBindTexture(GL11.GL_TEXTURE_2D, fontTexture);
-    gl.glEnable(GL11.GL_TEXTURE_2D);
+    
     gl.glColor4f(red, green, blue, 1);
     //glColor4f(1, 1, 1, 1);
     tesselator.begin(GL_QUADS);
@@ -205,22 +241,19 @@ public class IGLImpl implements IGL {
         float t = (c / 16) / 8.f;
         
        // System.out.println("s: " + s + "t: " + t);
-        
+
+        int x0 = i * 6;
         tesselator.texCoord2f(s, t);
-     //   tesselator.texCoord2f(0, 0);
-        tesselator.vertex3f(i * 8, 0, 1);
+        tesselator.vertex3f(x0, 0, 1);
 
         tesselator.texCoord2f(s + 1.f/16, t);
-      //  tesselator.texCoord2f(0, 1);
-        tesselator.vertex3f(i * 8 + 8, 0, 1);
+        tesselator.vertex3f(x0 + 8, 0, 1);
 
         tesselator.texCoord2f(s + 1.f/16, t + 1.f/8);
-     //   tesselator.texCoord2f(1, 1);
-        tesselator.vertex3f(i * 8 + 8, 16, 1);
+        tesselator.vertex3f(x0 + 8, 16, 1);
 
         tesselator.texCoord2f(s, t + 1.f/8);
-     //   tesselator.texCoord2f(1, 0);
-        tesselator.vertex3f(i * 8, 16, 1);
+        tesselator.vertex3f(x0, 16, 1);
     }
     tesselator.draw(gl);
     gl.glDisable(GL11.GL_TEXTURE_2D);
@@ -269,4 +302,50 @@ public class IGLImpl implements IGL {
     gl.glLoadIdentity();
   }
 
+  static class Texture {
+    Image image;
+    boolean loaded;
+    int handle;
+    
+    public Texture(Image image, int handle) {
+      this.image = image;
+      this.handle = handle;
+    }
+    
+    void load(GL11 gl) {
+      if (!loaded) {
+        if (!image.isReady()) {    
+          return;
+        }
+        loaded = true;
+        int w = image.width();
+        int h = image.height();
+      
+        int [] argbArray = new int[w * h];
+        image.getRgb(0, 0, w, h, argbArray, 0, w);
+        
+        ByteBuffer byteBuffer = ByteBuffer.allocateDirect(Math.max(65536, w * h) * 4);
+        byteBuffer.order(ByteOrder.nativeOrder());
+        IntBuffer rgbaBuffer = byteBuffer.asIntBuffer();
+        
+        for(int i = 0; i < argbArray.length; i++) {
+          int argb = argbArray[i];
+          byteBuffer.put((byte) ((argb >> 16) & 255));
+          byteBuffer.put((byte) ((argb >> 8) & 255));
+          byteBuffer.put((byte) ((argb) & 255));
+          byteBuffer.put((byte) ((argb >> 24) & 255));
+        }
+        byteBuffer.position(0);
+        gl.glBindTexture(GL11.GL_TEXTURE_2D, handle);
+        gl.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_MIN_FILTER, GL11.GL_LINEAR);
+        gl.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_MAG_FILTER, GL11.GL_LINEAR);
+        gl.glTexImage2D(GL11.GL_TEXTURE_2D, 0, 4, w, h, 0, GL11.GL_RGBA, GL11.GL_UNSIGNED_BYTE, byteBuffer);
+      }
+      gl.glBindTexture(GL11.GL_TEXTURE_2D, handle);
+      gl.glEnable(GL11.GL_TEXTURE_2D);
+    }
+    
+  }
+
+  
 }

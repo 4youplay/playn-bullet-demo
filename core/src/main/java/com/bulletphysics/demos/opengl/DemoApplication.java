@@ -21,7 +21,7 @@
  * 3. This notice may not be removed or altered from any source distribution.
  */
 
-package com.googlecode.playnbulletdemo.core.bullet;
+package com.bulletphysics.demos.opengl;
 
 import com.bulletphysics.BulletGlobals;
 import com.bulletphysics.BulletStats;
@@ -46,10 +46,8 @@ import javax.vecmath.Color3f;
 import javax.vecmath.Matrix3f;
 import javax.vecmath.Quat4f;
 import javax.vecmath.Vector3f;
-
-import playn.core.Key;
-import playn.core.Keyboard;
-import static com.googlecode.playnbulletdemo.core.bullet.IGL.*;
+import org.lwjgl.input.Keyboard;
+import static com.bulletphysics.demos.opengl.IGL.*;
 
 /**
  *
@@ -156,7 +154,7 @@ public abstract class DemoApplication {
 		gl.glEnable(GL_DEPTH_TEST);
 		gl.glDepthFunc(GL_LESS);
 
-		gl.glClearColor(0.7f, 0.7f, 0.7f, 0);
+		gl.glClearColor(0.7f, 0.7f, 0.7f, 0f);
 
 		//glEnable(GL_CULL_FACE);
 		//glCullFace(GL_BACK);
@@ -464,19 +462,19 @@ public abstract class DemoApplication {
 		}
 	}
 	
-	public void specialKeyboardUp(Key key, int x, int y, int modifiers) {
+	public void specialKeyboardUp(int key, int x, int y, int modifiers) {
 		//LWJGL.postRedisplay();
 	}
 
-	public void specialKeyboard(Key key, int x, int y, int modifiers) {
+	public void specialKeyboard(int key, int x, int y, int modifiers) {
 		switch (key) {
-			case F1: {
+			case Keyboard.KEY_F1: {
 				break;
 			}
-			case F2: {
+			case Keyboard.KEY_F2: {
 				break;
 			}
-			case END: {
+			case Keyboard.KEY_END: {
 				int numObj = getDynamicsWorld().getNumCollisionObjects();
 				if (numObj != 0) {
 					CollisionObject obj = getDynamicsWorld().getCollisionObjectArray().getQuick(numObj - 1);
@@ -490,25 +488,25 @@ public abstract class DemoApplication {
 				}
 				break;
 			}
-			case LEFT:
+			case Keyboard.KEY_LEFT:
 				stepLeft();
 				break;
-			case RIGHT:
+			case Keyboard.KEY_RIGHT:
 				stepRight();
 				break;
-			case UP:
+			case Keyboard.KEY_UP:
 				stepFront();
 				break;
-			case DOWN:
+			case Keyboard.KEY_DOWN:
 				stepBack();
 				break;
-			case PAGE_UP:
+			case Keyboard.KEY_PRIOR /* TODO: check PAGE_UP */:
 				zoomIn();
 				break;
-			case PAGE_DOWN:
+			case Keyboard.KEY_NEXT /* TODO: checkPAGE_DOWN */:
 				zoomOut();
 				break;
-			case HOME:
+			case Keyboard.KEY_HOME:
 				toggleIdle();
 				break;
 			default:
@@ -520,9 +518,9 @@ public abstract class DemoApplication {
 	}
 	
 	public void moveAndDisplay() {
-		//if (!idle) {
+		if (!idle) {
 			clientMoveAndDisplay();
-		//}
+		}
 	}
 	
 	public void displayCallback() {
@@ -905,36 +903,34 @@ public abstract class DemoApplication {
 					colObj.getWorldTransform(m);
 				}
 
-				wireColor.set(0.8f, 0.8f, 0.8f); // wants deactivation
+				wireColor.set(1f, 1f, 0.5f); // wants deactivation
 				if ((i & 1) != 0) {
-					wireColor.set(0.4f, 0.4f, 0.4f);
+					wireColor.set(0f, 0f, 1f);
 				}
 
-				
 				// color differently for active, sleeping, wantsdeactivation states
 				if (colObj.getActivationState() == 1) // active
 				{
 					if ((i & 1) != 0) {
 						//wireColor.add(new Vector3f(1f, 0f, 0f));
-						wireColor.y += 0.2f;
+						wireColor.x += 1f;
 					}
 					else {
 						//wireColor.add(new Vector3f(0.5f, 0f, 0f));
-						wireColor.y += 0.2f;
+						wireColor.x += 0.5f;
 					}
-				} else
-				if (colObj.getActivationState() != 2) // ISLAND_SLEEPING
+				}
+				if (colObj.getActivationState() == 2) // ISLAND_SLEEPING
 				{
 					if ((i & 1) != 0) {
 						//wireColor.add(new Vector3f(0f, 1f, 0f));
-						wireColor.x += 0.2f;
+						wireColor.y += 1f;
 					}
 					else {
 						//wireColor.add(new Vector3f(0f, 0.5f, 0f));
-						wireColor.x += 0.2f;
+						wireColor.y += 0.5f;
 					}
 				}
-                
 
 				GLShapeDrawer.drawOpenGL(gl, m, colObj.getCollisionShape(), wireColor, getDebugMode());
 			}
@@ -1093,7 +1089,6 @@ public abstract class DemoApplication {
 				//#endif //SHOW_NUM_DEEP_PENETRATIONS
 
 				// JAVA NOTE: added
-				/*
 				int free = (int)Runtime.getRuntime().freeMemory();
 				int total = (int)Runtime.getRuntime().totalMemory();
 				buf.setLength(0);
@@ -1103,7 +1098,6 @@ public abstract class DemoApplication {
 				FastFormat.append(buf, (float)(total) / (1024*1024));
 				buf.append(" MB");
 				drawString(buf, Math.round(xOffset), Math.round(yStart), TEXT_COLOR);
-				*/
 				yStart += yIncr;
 				
 				resetPerspectiveProjection();
