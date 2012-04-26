@@ -32,6 +32,9 @@ import com.bulletphysics.linearmath.QuaternionUtil;
 import com.bulletphysics.linearmath.Transform;
 import com.bulletphysics.linearmath.VectorUtil;
 import com.bulletphysics.util.ArrayPool;
+
+import cz.advel.stack.Creator;
+
 import cz.advel.stack.Stack;
 import javax.vecmath.Matrix3f;
 import javax.vecmath.Quat4f;
@@ -51,27 +54,26 @@ public class GjkEpaSolver {
 
 	protected final ArrayPool<float[]> floatArrays = ArrayPool.get(float.class);
 
-	protected final ObjectStackList<Mkv> stackMkv = new ObjectStackList<Mkv>() {
+	protected final ObjectStackList<Mkv> stackMkv = new ObjectStackList<Mkv>(new Creator<Mkv>() {
 	   @Override
 	   public Mkv create() {
 	     return new Mkv();
 	   }
-	};
+	});
 
-	protected final ObjectStackList<He> stackHe = new ObjectStackList<He>() {
+	protected final ObjectStackList<He> stackHe = new ObjectStackList<He>(new Creator<He>() {
 	  @Override
       public He create() {
         return new He();
       }
-	};
+	});
 	
-	protected final ObjectStackList<Face> stackFace = new ObjectStackList<Face>() {
+	protected final ObjectStackList<Face> stackFace = new ObjectStackList<Face>(new Creator<Face>() {
 	  @Override
       public Face create() {
 	    return new Face();
 	  }
-
-	};
+	});
 
 	protected void pushStack() {
 		stackMkv.push();
