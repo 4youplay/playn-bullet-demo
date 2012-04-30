@@ -830,7 +830,7 @@ public abstract class DemoApplication {
 				buf.append("--- Profiling: ");
 				buf.append(profileIterator.getCurrentParentName());
 				buf.append(" (total running time: ");
-				FastFormat.append(buf, (float) parent_time, 3);
+				buf.append(FastFormat.format((float) parent_time, 5));
 				buf.append(" ms) ---");
 				displayProfileString(xOffset, yStart, buf);
 				yStart += yIncr;
@@ -851,11 +851,11 @@ public abstract class DemoApplication {
 				buf.append(" -- ");
 				buf.append(profileIterator.getCurrentName());
 				buf.append(" (");
-				FastFormat.append(buf, (float) fraction, 2);
+				buf.append(FastFormat.format((float) fraction, 3));
 				buf.append(" %) :: ");
-				FastFormat.append(buf, (float) (current_total_time / (double) frames_since_reset), 3);
+				buf.append(FastFormat.format((float) (current_total_time / (double) frames_since_reset), 5));
 				buf.append(" ms / frame (");
-				FastFormat.append(buf, profileIterator.getCurrentTotalCalls());
+				buf.append(FastFormat.format(profileIterator.getCurrentTotalCalls(), 5));
 				buf.append(" calls)");
 
 				displayProfileString(xOffset, yStart, buf);
@@ -865,9 +865,9 @@ public abstract class DemoApplication {
 
 			buf.setLength(0);
 			buf.append("Unaccounted (");
-			FastFormat.append(buf, (float) (parent_time > BulletGlobals.FLT_EPSILON ? ((parent_time - accumulated_time) / parent_time) * 100 : 0.f), 3);
+			buf.append(FastFormat.format((float) (parent_time > BulletGlobals.FLT_EPSILON ? ((parent_time - accumulated_time) / parent_time) * 100 : 0.f), 3));
 			buf.append(" %) :: ");
-			FastFormat.append(buf, (float) (parent_time - accumulated_time), 3);
+			buf.append(FastFormat.format((float) (parent_time - accumulated_time), 5));
 			buf.append(" ms");
 
 			displayProfileString(xOffset, yStart, buf);
@@ -914,26 +914,12 @@ public abstract class DemoApplication {
 				// color differently for active, sleeping, wantsdeactivation states
 				if (colObj.getActivationState() == 1) // active
 				{
-					if ((i & 1) != 0) {
-						//wireColor.add(new Vector3f(1f, 0f, 0f));
-						wireColor.y += 0.2f;
-					}
-					else {
-						//wireColor.add(new Vector3f(0.5f, 0f, 0f));
-						wireColor.y += 0.2f;
-					}
-				} else
+					wireColor.x += 0.2f;
+				}  else
 				if (colObj.getActivationState() != 2) // ISLAND_SLEEPING
 				{
-					if ((i & 1) != 0) {
-						//wireColor.add(new Vector3f(0f, 1f, 0f));
-						wireColor.x += 0.2f;
-					}
-					else {
-						//wireColor.add(new Vector3f(0f, 0.5f, 0f));
-						wireColor.x += 0.2f;
-					}
-				}
+					wireColor.z += 0.2f;
+				} 
                 
 
 				GLShapeDrawer.drawOpenGL(gl, m, colObj.getCollisionShape(), wireColor, getDebugMode());
@@ -1033,7 +1019,7 @@ public abstract class DemoApplication {
 				//buf = String.format(%10.2f", ShootBoxInitialSpeed);
 				buf.setLength(0);
 				buf.append("+- shooting speed = ");
-				FastFormat.append(buf, ShootBoxInitialSpeed);
+				FastFormat.append(buf, ShootBoxInitialSpeed, 1);
 				drawString(buf, Math.round(xOffset), Math.round(yStart), TEXT_COLOR);
 				yStart += yIncr;
 

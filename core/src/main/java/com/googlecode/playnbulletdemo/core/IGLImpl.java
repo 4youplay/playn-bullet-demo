@@ -32,7 +32,7 @@ public class IGLImpl implements IGL {
     IntBuffer intBuffer = byteBuffer.asIntBuffer();
     gl.glGenTextures(2, intBuffer);
     fontTexture = new Texture(PlayN.assets().getImage("images/font.png"), intBuffer.get(0));
-    cubeTexture = new Texture(PlayN.assets().getImage("images/cube.png"), intBuffer.get(1));
+    cubeTexture = new Texture(PlayN.assets().getImage("images/playncube.png"), intBuffer.get(1));
   }
   
 

@@ -52,10 +52,7 @@ public class FastFormat {
 		if (first) b.append('0');
 	}
 
-	public static void append(StringBuilder b, float f) {
-		append(b, f, 2);
-	}
-
+	// I don't think this works for fracDigits != 1
 	public static void append(StringBuilder b, float f, int fracDigits) {
 		int mult = 10*fracDigits;
 		int val = Math.round(f*mult);
@@ -63,5 +60,12 @@ public class FastFormat {
 		b.append('.');
 		append(b, Math.abs(val % mult));
 	}
+
+	public static String format(float f, int fullDigits) {
+		StringBuilder sb = new StringBuilder();
+		int fracDigits = 1;
+		append(sb, f, fracDigits);
+		return "                   ".substring(0, fullDigits + 1 + fracDigits - sb.length()) + sb.toString();
+	}	
 	
 }

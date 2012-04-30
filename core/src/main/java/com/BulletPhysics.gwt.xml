@@ -1,0 +1,8 @@
+<module >
+  <inherits name='com.google.gwt.core.Core'/>
+  <inherits name='javax.Vecmath'/>
+  <inherits name='cz.advel.Stack'/>
+
+  <source path='bulletphysics' />
+ 
+</module>

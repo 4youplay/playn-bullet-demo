@@ -111,7 +111,7 @@ public class BasicDemo extends DemoApplication {
 	}
 
 	public void initPhysics() {
-		setCameraDistance(50f);
+		setCameraDistance(15);
 
 		// collision configuration contains default setup for memory, collision setup
 		collisionConfiguration = new DefaultCollisionConfiguration();

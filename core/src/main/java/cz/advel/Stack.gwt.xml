@@ -2,5 +2,6 @@
   <inherits name='com.google.gwt.core.Core'/>
 
   <source path='stack' />
+  <super-source path='super' />
  
 </module>
