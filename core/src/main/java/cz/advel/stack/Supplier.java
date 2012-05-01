@@ -3,7 +3,7 @@
 package cz.advel.stack;
 
 /**
- * Creates an instance of T.
+ * Supplies an instance of T.
  */
 public interface Supplier<T> {
   public T get();

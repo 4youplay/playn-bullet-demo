@@ -46,7 +46,7 @@ public class ManifoldResult extends DiscreteCollisionDetectorInterface.Result {
 			new Supplier<ManifoldPoint>() {
 				@Override
 				public ManifoldPoint get() {
-					return null;
+					return new ManifoldPoint();
 				}});
 	
 	private PersistentManifold manifoldPtr;
