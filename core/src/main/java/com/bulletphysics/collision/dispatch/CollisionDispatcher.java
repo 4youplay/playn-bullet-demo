@@ -36,6 +36,8 @@ import com.bulletphysics.collision.broadphase.OverlappingPairCache;
 import com.bulletphysics.collision.narrowphase.PersistentManifold;
 import com.bulletphysics.util.ObjectArrayList;
 
+import cz.advel.stack.Supplier;
+
 /**
  * CollisionDispatcher supports algorithms that handle ConvexConvex and ConvexConcave collision pairs.
  * Time of Impact, Closest Points and Penetration Depth.
@@ -44,7 +46,12 @@ import com.bulletphysics.util.ObjectArrayList;
  */
 public class CollisionDispatcher extends Dispatcher {
 	
-	protected final ObjectPool<PersistentManifold> manifoldsPool = ObjectPool.get(PersistentManifold.class);
+	protected final ObjectPool<PersistentManifold> manifoldsPool = ObjectPool.get(PersistentManifold.class,
+			new Supplier<PersistentManifold>() {
+				@Override
+				public PersistentManifold get() {
+					return new PersistentManifold();
+				}});
 
 	private static final int MAX_BROADPHASE_COLLISION_TYPES = BroadphaseNativeType.MAX_BROADPHASE_COLLISION_TYPES.ordinal();
 	private int count = 0;

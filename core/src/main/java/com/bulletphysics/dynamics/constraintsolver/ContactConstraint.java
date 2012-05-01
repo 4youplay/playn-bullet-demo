@@ -29,6 +29,8 @@ import com.bulletphysics.collision.narrowphase.ManifoldPoint;
 import com.bulletphysics.dynamics.RigidBody;
 import com.bulletphysics.linearmath.Transform;
 import cz.advel.stack.Stack;
+import cz.advel.stack.Supplier;
+
 import javax.vecmath.Matrix3f;
 import javax.vecmath.Vector3f;
 
@@ -70,7 +72,12 @@ public class ContactConstraint {
 			return;
 		}
 
-		ObjectPool<JacobianEntry> jacobiansPool = ObjectPool.get(JacobianEntry.class);
+		ObjectPool<JacobianEntry> jacobiansPool = ObjectPool.get(JacobianEntry.class, new Supplier<JacobianEntry>() {
+			@Override
+			public JacobianEntry get() {
+				return new JacobianEntry();
+			}
+		});
 		Vector3f tmp = Stack.alloc(Vector3f.class);
 		
 		Vector3f rel_pos1 = Stack.alloc(Vector3f.class);

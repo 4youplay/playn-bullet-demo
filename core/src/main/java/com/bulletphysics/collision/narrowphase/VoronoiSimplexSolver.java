@@ -27,6 +27,8 @@ import com.bulletphysics.util.ObjectPool;
 import com.bulletphysics.linearmath.VectorUtil;
 import cz.advel.stack.Stack;
 import cz.advel.stack.StaticAlloc;
+import cz.advel.stack.Supplier;
+
 import javax.vecmath.Vector3f;
 
 /**
@@ -39,7 +41,12 @@ import javax.vecmath.Vector3f;
 public class VoronoiSimplexSolver extends SimplexSolverInterface {
 
 	//protected final BulletStack stack = BulletStack.get();
-	protected final ObjectPool<SubSimplexClosestResult> subsimplexResultsPool = ObjectPool.get(SubSimplexClosestResult.class);
+	protected final ObjectPool<SubSimplexClosestResult> subsimplexResultsPool = ObjectPool.get(SubSimplexClosestResult.class,
+			new Supplier<SubSimplexClosestResult>() {
+				@Override
+				public SubSimplexClosestResult get() {
+					return new SubSimplexClosestResult();
+				}});
 	
 	private static final int VORONOI_SIMPLEX_MAX_VERTS = 5;
 	

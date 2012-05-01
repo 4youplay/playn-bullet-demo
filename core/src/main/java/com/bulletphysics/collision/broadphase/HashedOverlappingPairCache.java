@@ -29,6 +29,8 @@ import com.bulletphysics.linearmath.MiscUtil;
 import com.bulletphysics.util.IntArrayList;
 import com.bulletphysics.util.ObjectArrayList;
 
+import cz.advel.stack.Supplier;
+
 /**
  * Hash-space based {@link OverlappingPairCache}.
  * 
@@ -36,7 +38,11 @@ import com.bulletphysics.util.ObjectArrayList;
  */
 public class HashedOverlappingPairCache extends OverlappingPairCache {
 
-	private final ObjectPool<BroadphasePair> pairsPool = ObjectPool.get(BroadphasePair.class);
+	private final ObjectPool<BroadphasePair> pairsPool = ObjectPool.get(BroadphasePair.class, new Supplier<BroadphasePair>() {
+		@Override
+		public BroadphasePair get() {
+			return new BroadphasePair();
+		}});
 	
 	private static final int NULL_PAIR = 0xffffffff;
 	

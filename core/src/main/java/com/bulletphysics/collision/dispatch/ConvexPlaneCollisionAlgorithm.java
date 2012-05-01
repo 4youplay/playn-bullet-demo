@@ -33,6 +33,8 @@ import com.bulletphysics.linearmath.Transform;
 import com.bulletphysics.util.ObjectArrayList;
 import com.bulletphysics.util.ObjectPool;
 import cz.advel.stack.Stack;
+import cz.advel.stack.Supplier;
+
 import javax.vecmath.Vector3f;
 
 /**
@@ -148,7 +150,13 @@ public class ConvexPlaneCollisionAlgorithm extends CollisionAlgorithm {
 	////////////////////////////////////////////////////////////////////////////
 	
 	public static class CreateFunc extends CollisionAlgorithmCreateFunc {
-		private final ObjectPool<ConvexPlaneCollisionAlgorithm> pool = ObjectPool.get(ConvexPlaneCollisionAlgorithm.class);
+		private final ObjectPool<ConvexPlaneCollisionAlgorithm> pool = ObjectPool.get(ConvexPlaneCollisionAlgorithm.class,
+				new Supplier<ConvexPlaneCollisionAlgorithm>() {
+					@Override
+					public ConvexPlaneCollisionAlgorithm get() {
+						return new ConvexPlaneCollisionAlgorithm();
+					}
+		});
 
 		@Override
 		public CollisionAlgorithm createCollisionAlgorithm(CollisionAlgorithmConstructionInfo ci, CollisionObject body0, CollisionObject body1) {

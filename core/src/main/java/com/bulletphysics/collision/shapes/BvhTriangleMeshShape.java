@@ -28,6 +28,8 @@ import com.bulletphysics.util.ObjectPool;
 import com.bulletphysics.collision.broadphase.BroadphaseNativeType;
 import com.bulletphysics.linearmath.VectorUtil;
 import cz.advel.stack.Stack;
+import cz.advel.stack.Supplier;
+
 import javax.vecmath.Vector3f;
 
 /**
@@ -51,7 +53,12 @@ public class BvhTriangleMeshShape extends TriangleMeshShape {
 	private boolean useQuantizedAabbCompression;
 	private boolean ownsBvh;
 	
-	private ObjectPool<MyNodeOverlapCallback> myNodeCallbacks = ObjectPool.get(MyNodeOverlapCallback.class);
+	private ObjectPool<MyNodeOverlapCallback> myNodeCallbacks = ObjectPool.get(MyNodeOverlapCallback.class,
+			new Supplier<MyNodeOverlapCallback>() {
+				@Override
+				public MyNodeOverlapCallback get() {
+					return new MyNodeOverlapCallback();
+				}});
 	
 	public BvhTriangleMeshShape() {
 		super(null);

@@ -43,6 +43,8 @@ import com.bulletphysics.util.Misc;
 import com.bulletphysics.util.ObjectArrayList;
 import cz.advel.stack.Stack;
 import cz.advel.stack.StaticAlloc;
+import cz.advel.stack.Supplier;
+
 import javax.vecmath.Matrix3f;
 import javax.vecmath.Vector3f;
 
@@ -74,9 +76,24 @@ public class SequentialImpulseConstraintSolver extends ConstraintSolver {
 	
 	////////////////////////////////////////////////////////////////////////////
 	
-	private final ObjectPool<SolverBody> bodiesPool = ObjectPool.get(SolverBody.class);
-	private final ObjectPool<SolverConstraint> constraintsPool = ObjectPool.get(SolverConstraint.class);
-	private final ObjectPool<JacobianEntry> jacobiansPool = ObjectPool.get(JacobianEntry.class);
+	private final ObjectPool<SolverBody> bodiesPool = ObjectPool.get(SolverBody.class, new Supplier<SolverBody>() {
+		@Override
+		public SolverBody get() {
+			return new SolverBody();
+		}
+	});
+	private final ObjectPool<SolverConstraint> constraintsPool = ObjectPool.get(SolverConstraint.class, new Supplier<SolverConstraint>() {
+		@Override
+		public SolverConstraint get() {
+			return new SolverConstraint();
+		}
+	});
+	private final ObjectPool<JacobianEntry> jacobiansPool = ObjectPool.get(JacobianEntry.class, new Supplier<JacobianEntry>() {
+		@Override
+		public JacobianEntry get() {
+			return new JacobianEntry();
+		}
+	});
 	
 	private final ObjectArrayList<SolverBody> tmpSolverBodyPool = new ObjectArrayList<SolverBody>();
 	private final ObjectArrayList<SolverConstraint> tmpSolverConstraintPool = new ObjectArrayList<SolverConstraint>();

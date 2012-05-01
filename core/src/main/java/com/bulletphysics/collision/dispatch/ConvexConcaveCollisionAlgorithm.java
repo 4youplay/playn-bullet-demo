@@ -39,6 +39,8 @@ import com.bulletphysics.linearmath.VectorUtil;
 import com.bulletphysics.util.ObjectArrayList;
 import com.bulletphysics.util.ObjectPool;
 import cz.advel.stack.Stack;
+import cz.advel.stack.Supplier;
+
 import javax.vecmath.Vector3f;
 
 /**
@@ -220,7 +222,12 @@ public class ConvexConcaveCollisionAlgorithm extends CollisionAlgorithm {
 	////////////////////////////////////////////////////////////////////////////
 
 	public static class CreateFunc extends CollisionAlgorithmCreateFunc {
-		private final ObjectPool<ConvexConcaveCollisionAlgorithm> pool = ObjectPool.get(ConvexConcaveCollisionAlgorithm.class);
+		private final ObjectPool<ConvexConcaveCollisionAlgorithm> pool = ObjectPool.get(ConvexConcaveCollisionAlgorithm.class,
+				new Supplier<ConvexConcaveCollisionAlgorithm>() {
+					@Override
+					public ConvexConcaveCollisionAlgorithm get() {
+						return new ConvexConcaveCollisionAlgorithm();
+					}});
 
 		@Override
 		public CollisionAlgorithm createCollisionAlgorithm(CollisionAlgorithmConstructionInfo ci, CollisionObject body0, CollisionObject body1) {
@@ -236,7 +243,12 @@ public class ConvexConcaveCollisionAlgorithm extends CollisionAlgorithm {
 	}
 	
 	public static class SwappedCreateFunc extends CollisionAlgorithmCreateFunc {
-		private final ObjectPool<ConvexConcaveCollisionAlgorithm> pool = ObjectPool.get(ConvexConcaveCollisionAlgorithm.class);
+		private final ObjectPool<ConvexConcaveCollisionAlgorithm> pool = ObjectPool.get(ConvexConcaveCollisionAlgorithm.class,
+				new Supplier<ConvexConcaveCollisionAlgorithm>() {
+					@Override
+					public ConvexConcaveCollisionAlgorithm get() {
+						return new ConvexConcaveCollisionAlgorithm();
+					}});
 		
 		@Override
 		public CollisionAlgorithm createCollisionAlgorithm(CollisionAlgorithmConstructionInfo ci, CollisionObject body0, CollisionObject body1) {

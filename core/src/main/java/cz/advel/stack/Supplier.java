@@ -5,6 +5,6 @@ package cz.advel.stack;
 /**
  * Creates an instance of T.
  */
-public interface Creator<T> {
-  public T create();
+public interface Supplier<T> {
+  public T get();
 }

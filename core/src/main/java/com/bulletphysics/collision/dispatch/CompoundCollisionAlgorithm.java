@@ -33,6 +33,7 @@ import com.bulletphysics.linearmath.Transform;
 import com.bulletphysics.util.ObjectArrayList;
 import com.bulletphysics.util.ObjectPool;
 import cz.advel.stack.Stack;
+import cz.advel.stack.Supplier;
 
 /**
  * CompoundCollisionAlgorithm supports collision between {@link CompoundShape}s and
@@ -184,7 +185,13 @@ public class CompoundCollisionAlgorithm extends CollisionAlgorithm {
 	////////////////////////////////////////////////////////////////////////////
 	
 	public static class CreateFunc extends CollisionAlgorithmCreateFunc {
-		private final ObjectPool<CompoundCollisionAlgorithm> pool = ObjectPool.get(CompoundCollisionAlgorithm.class);
+		private final ObjectPool<CompoundCollisionAlgorithm> pool = ObjectPool.get(CompoundCollisionAlgorithm.class, 
+				new Supplier<CompoundCollisionAlgorithm>() {
+					@Override
+					public CompoundCollisionAlgorithm get() {
+						return new CompoundCollisionAlgorithm();
+					}
+		});
 
 		@Override
 		public CollisionAlgorithm createCollisionAlgorithm(CollisionAlgorithmConstructionInfo ci, CollisionObject body0, CollisionObject body1) {
@@ -200,7 +207,12 @@ public class CompoundCollisionAlgorithm extends CollisionAlgorithm {
 	};
 	
 	public static class SwappedCreateFunc extends CollisionAlgorithmCreateFunc {
-		private final ObjectPool<CompoundCollisionAlgorithm> pool = ObjectPool.get(CompoundCollisionAlgorithm.class);
+		private final ObjectPool<CompoundCollisionAlgorithm> pool = ObjectPool.get(CompoundCollisionAlgorithm.class,
+				new Supplier<CompoundCollisionAlgorithm>() {
+					@Override
+					public CompoundCollisionAlgorithm get() {
+						return new CompoundCollisionAlgorithm();
+					}});
 
 		@Override
 		public CollisionAlgorithm createCollisionAlgorithm(CollisionAlgorithmConstructionInfo ci, CollisionObject body0, CollisionObject body1) {

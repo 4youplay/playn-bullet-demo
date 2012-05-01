@@ -40,6 +40,8 @@ import com.bulletphysics.collision.shapes.SphereShape;
 import com.bulletphysics.linearmath.Transform;
 import com.bulletphysics.util.ObjectArrayList;
 import cz.advel.stack.Stack;
+import cz.advel.stack.Supplier;
+
 import javax.vecmath.Vector3f;
 
 /**
@@ -50,7 +52,12 @@ import javax.vecmath.Vector3f;
  */
 public class ConvexConvexAlgorithm extends CollisionAlgorithm {
 	
-	protected final ObjectPool<ClosestPointInput> pointInputsPool = ObjectPool.get(ClosestPointInput.class);
+	protected final ObjectPool<ClosestPointInput> pointInputsPool = ObjectPool.get(ClosestPointInput.class,
+			new Supplier<ClosestPointInput>() {
+				@Override
+				public ClosestPointInput get() {
+					return new ClosestPointInput();
+				}});
 
 	private GjkPairDetector gjkPairDetector = new GjkPairDetector();
 
@@ -250,7 +257,12 @@ public class ConvexConvexAlgorithm extends CollisionAlgorithm {
 	////////////////////////////////////////////////////////////////////////////
 	
 	public static class CreateFunc extends CollisionAlgorithmCreateFunc {
-		private final ObjectPool<ConvexConvexAlgorithm> pool = ObjectPool.get(ConvexConvexAlgorithm.class);
+		private final ObjectPool<ConvexConvexAlgorithm> pool = ObjectPool.get(ConvexConvexAlgorithm.class,
+				new Supplier<ConvexConvexAlgorithm>() {
+					@Override
+					public ConvexConvexAlgorithm get() {
+						return new ConvexConvexAlgorithm();
+					}});
 
 		public ConvexPenetrationDepthSolver pdSolver;
 		public SimplexSolverInterface simplexSolver;

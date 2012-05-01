@@ -30,6 +30,8 @@ import com.bulletphysics.collision.narrowphase.ManifoldPoint;
 import com.bulletphysics.collision.narrowphase.PersistentManifold;
 import com.bulletphysics.linearmath.Transform;
 import cz.advel.stack.Stack;
+import cz.advel.stack.Supplier;
+
 import javax.vecmath.Vector3f;
 
 /**
@@ -40,7 +42,12 @@ import javax.vecmath.Vector3f;
 public class ManifoldResult extends DiscreteCollisionDetectorInterface.Result {
 
 	//protected final BulletStack stack = BulletStack.get();
-	protected final ObjectPool<ManifoldPoint> pointsPool = ObjectPool.get(ManifoldPoint.class);
+	protected final ObjectPool<ManifoldPoint> pointsPool = ObjectPool.get(ManifoldPoint.class,
+			new Supplier<ManifoldPoint>() {
+				@Override
+				public ManifoldPoint get() {
+					return null;
+				}});
 	
 	private PersistentManifold manifoldPtr;
 

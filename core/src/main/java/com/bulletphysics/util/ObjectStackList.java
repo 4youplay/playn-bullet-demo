@@ -23,7 +23,7 @@
 
 package com.bulletphysics.util;
 
-import cz.advel.stack.Creator;
+import cz.advel.stack.Supplier;
 
 /**
  * Stack-based object pool for arbitrary objects, returning not supported.
@@ -32,16 +32,16 @@ import cz.advel.stack.Creator;
  */
 public class ObjectStackList<T> extends StackList<T> {
 
-    Creator<T> creator;
+    Supplier<T> creator;
 
-	public ObjectStackList(Creator<T> creator) {
+	public ObjectStackList(Supplier<T> creator) {
 		super(false);
 		this.creator = creator;
 	}
 
 	@Override
 	public T create() {
-	  return creator.create();
+	  return creator.get();
 	}
 
 	@Override

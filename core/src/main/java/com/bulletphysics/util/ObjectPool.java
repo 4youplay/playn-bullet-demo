@@ -27,6 +27,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import cz.advel.stack.Reflection;
+import cz.advel.stack.Supplier;
 
 /**
  * Object pool.
@@ -36,14 +37,12 @@ import cz.advel.stack.Reflection;
 public class ObjectPool<T> {
 	
 	private Class<T> cls;
+	private Supplier<T> supplier;
 	private ObjectArrayList<T> list = new ObjectArrayList<T>();
 	
-	public ObjectPool(Class<T> cls) {
+	public ObjectPool(Class<T> cls, Supplier<T> supplier) {
 		this.cls = cls;
-	}
-
-	private T create() {
-		return Reflection.newInstance(cls);
+		this.supplier = supplier;
 	}
 	
 	/**
@@ -56,7 +55,7 @@ public class ObjectPool<T> {
 			return list.remove(list.size() - 1);
 		}
 		else {
-			return create();
+			return supplier.get();
 		}
 	}
 	
@@ -85,12 +84,12 @@ public class ObjectPool<T> {
 	 * @return object pool
 	 */
 	@SuppressWarnings("unchecked")
-	public static <T> ObjectPool<T> get(Class<T> cls) {
+	public static <T> ObjectPool<T> get(Class<T> cls, Supplier<T> supplier) {
 		Map map = threadLocal.get();
 		
 		ObjectPool<T> pool = (ObjectPool<T>)map.get(cls);
 		if (pool == null) {
-			pool = new ObjectPool<T>(cls);
+			pool = new ObjectPool<T>(cls, supplier);
 			map.put(cls, pool);
 		}
 		

@@ -43,6 +43,8 @@ import com.bulletphysics.linearmath.TransformUtil;
 import com.bulletphysics.linearmath.VectorUtil;
 import com.bulletphysics.util.IntArrayList;
 import com.bulletphysics.util.ObjectPool;
+import com.bulletphysics.util.Suppliers;
+
 import javax.vecmath.Vector3f;
 //import static org.lwjgl.opengl.GL11.*;
 //import static org.lwjgl.opengl.glu.GLU.*;
@@ -94,8 +96,8 @@ public class GLShapeDrawer {
 	private static float[] glMat = new float[16];
 	
 	public static void drawOpenGL(IGL gl, Transform trans, CollisionShape shape, Vector3f color, int debugMode) {
-		ObjectPool<Transform> transformsPool = ObjectPool.get(Transform.class);
-		ObjectPool<Vector3f> vectorsPool = ObjectPool.get(Vector3f.class);
+		ObjectPool<Transform> transformsPool = ObjectPool.get(Transform.class, Suppliers.NEW_TRANSFORM_SUPPLIER);
+		ObjectPool<Vector3f> vectorsPool = ObjectPool.get(Vector3f.class, Suppliers.NEW_VECTOR3F_SUPPLIER);
 
 		//System.out.println("shape="+shape+" type="+BroadphaseNativeTypes.forValue(shape.getShapeType()));
 
