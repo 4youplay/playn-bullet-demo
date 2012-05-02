@@ -55,16 +55,16 @@ public abstract class TriangleMeshShape extends ConcaveShape {
 	}
 	
 	public Vector3f localGetSupportingVertex(Vector3f vec, Vector3f out) {
-		Vector3f tmp = Stack.alloc(Vector3f.class);
+		Vector3f tmp = Stack.allocVector3f();
 
 		Vector3f supportVertex = out;
 
-		Transform ident = Stack.alloc(Transform.class);
+		Transform ident = Stack.allocTransform();
 		ident.setIdentity();
 
 		SupportVertexCallback supportCallback = new SupportVertexCallback(vec, ident);
 
-		Vector3f aabbMax = Stack.alloc(Vector3f.class);
+		Vector3f aabbMax = Stack.allocVector3f();
 		aabbMax.set(1e30f, 1e30f, 1e30f);
 		tmp.negate(aabbMax);
 
@@ -82,10 +82,10 @@ public abstract class TriangleMeshShape extends ConcaveShape {
 
 	public void recalcLocalAabb() {
 		for (int i = 0; i < 3; i++) {
-			Vector3f vec = Stack.alloc(Vector3f.class);
+			Vector3f vec = Stack.allocVector3f();
 			vec.set(0f, 0f, 0f);
 			VectorUtil.setCoord(vec, i, 1f);
-			Vector3f tmp = localGetSupportingVertex(vec, Stack.alloc(Vector3f.class));
+			Vector3f tmp = localGetSupportingVertex(vec, Stack.allocVector3f());
 			VectorUtil.setCoord(localAabbMax, i, VectorUtil.getCoord(tmp, i) + collisionMargin);
 			VectorUtil.setCoord(vec, i, -1f);
 			localGetSupportingVertex(vec, tmp);
@@ -95,13 +95,13 @@ public abstract class TriangleMeshShape extends ConcaveShape {
 
 	@Override
 	public void getAabb(Transform trans, Vector3f aabbMin, Vector3f aabbMax) {
-		Vector3f tmp = Stack.alloc(Vector3f.class);
+		Vector3f tmp = Stack.allocVector3f();
 
-		Vector3f localHalfExtents = Stack.alloc(Vector3f.class);
+		Vector3f localHalfExtents = Stack.allocVector3f();
 		localHalfExtents.sub(localAabbMax, localAabbMin);
 		localHalfExtents.scale(0.5f);
 
-		Vector3f localCenter = Stack.alloc(Vector3f.class);
+		Vector3f localCenter = Stack.allocVector3f();
 		localCenter.add(localAabbMax, localAabbMin);
 		localCenter.scale(0.5f);
 
@@ -111,7 +111,7 @@ public abstract class TriangleMeshShape extends ConcaveShape {
 		Vector3f center = Stack.alloc(localCenter);
 		trans.transform(center);
 
-		Vector3f extent = Stack.alloc(Vector3f.class);
+		Vector3f extent = Stack.allocVector3f();
 		abs_b.getRow(0, tmp);
 		extent.x = tmp.dot(localHalfExtents);
 		abs_b.getRow(1, tmp);
@@ -119,7 +119,7 @@ public abstract class TriangleMeshShape extends ConcaveShape {
 		abs_b.getRow(2, tmp);
 		extent.z = tmp.dot(localHalfExtents);
 
-		Vector3f margin = Stack.alloc(Vector3f.class);
+		Vector3f margin = Stack.allocVector3f();
 		margin.set(getMargin(), getMargin(), getMargin());
 		extent.add(margin);
 

@@ -126,11 +126,11 @@ public class OptimizedBvh implements Serializable {
 	
 	public void setQuantizationValues(Vector3f aabbMin, Vector3f aabbMax, float quantizationMargin) {
 		// enlarge the AABB to avoid division by zero when initializing the quantization values
-		Vector3f clampValue = Stack.alloc(Vector3f.class);
+		Vector3f clampValue = Stack.allocVector3f();
 		clampValue.set(quantizationMargin,quantizationMargin,quantizationMargin);
 		bvhAabbMin.sub(aabbMin, clampValue);
 		bvhAabbMax.add(aabbMax, clampValue);
-		Vector3f aabbSize = Stack.alloc(Vector3f.class);
+		Vector3f aabbSize = Stack.allocVector3f();
 		aabbSize.sub(bvhAabbMax, bvhAabbMin);
 		bvhQuantization.set(65535f, 65535f, 65535f);
 		VectorUtil.div(bvhQuantization, bvhQuantization, aabbSize);
@@ -242,7 +242,7 @@ public class OptimizedBvh implements Serializable {
 			assert (triangleIndex >= 0);
 
 			int nodeId = triangleNodes.add();
-			Vector3f aabbMin = Stack.alloc(Vector3f.class), aabbMax = Stack.alloc(Vector3f.class);
+			Vector3f aabbMin = Stack.allocVector3f(), aabbMax = Stack.allocVector3f();
 			aabbMin.set(1e30f, 1e30f, 1e30f);
 			aabbMax.set(-1e30f, -1e30f, -1e30f);
 			VectorUtil.setMin(aabbMin, triangle[0]);
@@ -298,9 +298,9 @@ public class OptimizedBvh implements Serializable {
 		else {
 			NodeTriangleCallback callback = new NodeTriangleCallback(leafNodes);
 
-			Vector3f aabbMin = Stack.alloc(Vector3f.class);
+			Vector3f aabbMin = Stack.allocVector3f();
 			aabbMin.set(-1e30f, -1e30f, -1e30f);
-			Vector3f aabbMax = Stack.alloc(Vector3f.class);
+			Vector3f aabbMax = Stack.allocVector3f();
 			aabbMax.set(1e30f, 1e30f, 1e30f);
 
 			triangles.internalProcessAllTriangles(callback, aabbMin, aabbMax);
@@ -338,7 +338,7 @@ public class OptimizedBvh implements Serializable {
 	public void refit(StridingMeshInterface meshInterface) {
 		if (useQuantization) {
 			// calculate new aabb
-			Vector3f aabbMin = Stack.alloc(Vector3f.class), aabbMax = Stack.alloc(Vector3f.class);
+			Vector3f aabbMin = Stack.allocVector3f(), aabbMax = Stack.allocVector3f();
 			meshInterface.calculateAabbBruteForce(aabbMin, aabbMax);
 
 			setQuantizationValues(aabbMin, aabbMax);
@@ -403,9 +403,9 @@ public class OptimizedBvh implements Serializable {
 
 		int curNodeSubPart = -1;
 
-		Vector3f[] triangleVerts/*[3]*/ = new Vector3f[] { Stack.alloc(Vector3f.class), Stack.alloc(Vector3f.class), Stack.alloc(Vector3f.class) };
-		Vector3f aabbMin = Stack.alloc(Vector3f.class), aabbMax = Stack.alloc(Vector3f.class);
-		Vector3f meshScaling = meshInterface.getScaling(Stack.alloc(Vector3f.class));
+		Vector3f[] triangleVerts/*[3]*/ = new Vector3f[] { Stack.allocVector3f(), Stack.allocVector3f(), Stack.allocVector3f() };
+		Vector3f aabbMin = Stack.allocVector3f(), aabbMax = Stack.allocVector3f();
+		Vector3f meshScaling = meshInterface.getScaling(Stack.allocVector3f());
 
 		VertexData data = null;
 
@@ -502,10 +502,10 @@ public class OptimizedBvh implements Serializable {
 
 		int internalNodeIndex = curNodeIndex;
 
-		Vector3f tmp1 = Stack.alloc(Vector3f.class);
+		Vector3f tmp1 = Stack.allocVector3f();
 		tmp1.set(-1e30f, -1e30f, -1e30f);
 		setInternalNodeAabbMax(curNodeIndex, tmp1);
-		Vector3f tmp2 = Stack.alloc(Vector3f.class);
+		Vector3f tmp2 = Stack.allocVector3f();
 		tmp2.set(1e30f, 1e30f, 1e30f);
 		setInternalNodeAabbMin(curNodeIndex, tmp2);
 
@@ -609,9 +609,9 @@ public class OptimizedBvh implements Serializable {
 		int numIndices = endIndex - startIndex;
 		float splitValue;
 
-		Vector3f means = Stack.alloc(Vector3f.class);
+		Vector3f means = Stack.allocVector3f();
 		means.set(0f, 0f, 0f);
-		Vector3f center = Stack.alloc(Vector3f.class);
+		Vector3f center = Stack.allocVector3f();
 		for (i = startIndex; i < endIndex; i++) {
 			center.add(getAabbMax(i), getAabbMin(i));
 			center.scale(0.5f);
@@ -659,13 +659,13 @@ public class OptimizedBvh implements Serializable {
 	protected int calcSplittingAxis(int startIndex, int endIndex) {
 		int i;
 
-		Vector3f means = Stack.alloc(Vector3f.class);
+		Vector3f means = Stack.allocVector3f();
 		means.set(0f, 0f, 0f);
-		Vector3f variance = Stack.alloc(Vector3f.class);
+		Vector3f variance = Stack.allocVector3f();
 		variance.set(0f, 0f, 0f);
 		int numIndices = endIndex - startIndex;
 
-		Vector3f center = Stack.alloc(Vector3f.class);
+		Vector3f center = Stack.allocVector3f();
 		for (i = startIndex; i < endIndex; i++) {
 			center.add(getAabbMax(i), getAabbMin(i));
 			center.scale(0.5f);
@@ -673,7 +673,7 @@ public class OptimizedBvh implements Serializable {
 		}
 		means.scale(1f / (float) numIndices);
 
-		Vector3f diff2 = Stack.alloc(Vector3f.class);
+		Vector3f diff2 = Stack.allocVector3f();
 		for (i = startIndex; i < endIndex; i++) {
 			center.add(getAabbMax(i), getAabbMin(i));
 			center.scale(0.5f);
@@ -795,7 +795,7 @@ public class OptimizedBvh implements Serializable {
 	protected void walkStacklessQuantizedTreeAgainstRay(NodeOverlapCallback nodeCallback, Vector3f raySource, Vector3f rayTarget, Vector3f aabbMin, Vector3f aabbMax, int startNodeIndex, int endNodeIndex) {
 		assert (useQuantization);
 
-		Vector3f tmp = Stack.alloc(Vector3f.class);
+		Vector3f tmp = Stack.allocVector3f();
 
 		int curIndex = startNodeIndex;
 		int walkIterations = 0;
@@ -813,7 +813,7 @@ public class OptimizedBvh implements Serializable {
 		//#define RAYAABB2
 		//#ifdef RAYAABB2
 		Vector3f rayFrom = Stack.alloc(raySource);
-		Vector3f rayDirection = Stack.alloc(Vector3f.class);
+		Vector3f rayDirection = Stack.allocVector3f();
 		tmp.sub(rayTarget, raySource);
 		rayDirection.normalize(tmp);
 		lambda_max = rayDirection.dot(tmp);
@@ -840,9 +840,9 @@ public class OptimizedBvh implements Serializable {
 		quantizedQueryAabbMin = quantizeWithClamp(rayAabbMin);
 		quantizedQueryAabbMax = quantizeWithClamp(rayAabbMax);
 
-		Vector3f bounds_0 = Stack.alloc(Vector3f.class);
-		Vector3f bounds_1 = Stack.alloc(Vector3f.class);
-		Vector3f normal = Stack.alloc(Vector3f.class);
+		Vector3f bounds_0 = Stack.allocVector3f();
+		Vector3f bounds_1 = Stack.allocVector3f();
+		Vector3f normal = Stack.allocVector3f();
 		float[] param = new float[1];
 
 		while (curIndex < endNodeIndex) {
@@ -974,7 +974,7 @@ public class OptimizedBvh implements Serializable {
 	public void reportRayOverlappingNodex(NodeOverlapCallback nodeCallback, Vector3f raySource, Vector3f rayTarget) {
 		boolean fast_path = useQuantization && traversalMode == TraversalMode.STACKLESS;
 		if (fast_path) {
-			Vector3f tmp = Stack.alloc(Vector3f.class);
+			Vector3f tmp = Stack.allocVector3f();
 			tmp.set(0f, 0f, 0f);
 			walkStacklessQuantizedTreeAgainstRay(nodeCallback, raySource, rayTarget, tmp, tmp, 0, curNodeIndex);
 		}
@@ -1013,7 +1013,7 @@ public class OptimizedBvh implements Serializable {
 		VectorUtil.setMax(clampedPoint, bvhAabbMin);
 		VectorUtil.setMin(clampedPoint, bvhAabbMax);
 
-		Vector3f v = Stack.alloc(Vector3f.class);
+		Vector3f v = Stack.allocVector3f();
 		v.sub(clampedPoint, bvhAabbMin);
 		VectorUtil.mul(v, v, bvhQuantization);
 

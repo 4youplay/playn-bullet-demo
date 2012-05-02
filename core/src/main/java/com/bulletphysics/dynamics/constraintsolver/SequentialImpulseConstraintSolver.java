@@ -173,7 +173,7 @@ public class SequentialImpulseConstraintSolver extends ConstraintSolver {
 		RigidBody rb = RigidBody.upcast(collisionObject);
 		if (rb != null) {
 			rb.getAngularVelocity(solverBody.angularVelocity);
-			solverBody.centerOfMassPosition.set(collisionObject.getWorldTransform(Stack.alloc(Transform.class)).origin);
+			solverBody.centerOfMassPosition.set(collisionObject.getWorldTransform(Stack.allocTransform()).origin);
 			solverBody.friction = collisionObject.getFriction();
 			solverBody.invMass = rb.getInvMass();
 			rb.getLinearVelocity(solverBody.linearVelocity);
@@ -182,7 +182,7 @@ public class SequentialImpulseConstraintSolver extends ConstraintSolver {
 		}
 		else {
 			solverBody.angularVelocity.set(0f, 0f, 0f);
-			solverBody.centerOfMassPosition.set(collisionObject.getWorldTransform(Stack.alloc(Transform.class)).origin);
+			solverBody.centerOfMassPosition.set(collisionObject.getWorldTransform(Stack.allocTransform()).origin);
 			solverBody.friction = collisionObject.getFriction();
 			solverBody.invMass = 0f;
 			solverBody.linearVelocity.set(0f, 0f, 0f);
@@ -237,7 +237,7 @@ public class SequentialImpulseConstraintSolver extends ConstraintSolver {
 
 			normalImpulse = contactConstraint.appliedPushImpulse - oldNormalImpulse;
 
-			Vector3f tmp = Stack.alloc(Vector3f.class);
+			Vector3f tmp = Stack.allocVector3f();
 
 			tmp.scale(body1.invMass, contactConstraint.contactNormal);
 			body1.internalApplyPushImpulse(tmp, contactConstraint.angularComponentA, normalImpulse);
@@ -291,7 +291,7 @@ public class SequentialImpulseConstraintSolver extends ConstraintSolver {
 
 			normalImpulse = contactConstraint.appliedImpulse - oldNormalImpulse;
 
-			Vector3f tmp = Stack.alloc(Vector3f.class);
+			Vector3f tmp = Stack.allocVector3f();
 
 			tmp.scale(body1.invMass, contactConstraint.contactNormal);
 			body1.internalApplyImpulse(tmp, contactConstraint.angularComponentA, normalImpulse);
@@ -355,7 +355,7 @@ public class SequentialImpulseConstraintSolver extends ConstraintSolver {
 				//GEN_set_max(contactConstraint.m_appliedImpulse, -limit);
 			}
 
-			Vector3f tmp = Stack.alloc(Vector3f.class);
+			Vector3f tmp = Stack.allocVector3f();
 			
 			tmp.scale(body1.invMass, contactConstraint.contactNormal);
 			body1.internalApplyImpulse(tmp, contactConstraint.angularComponentA, j1);
@@ -388,8 +388,8 @@ public class SequentialImpulseConstraintSolver extends ConstraintSolver {
 		solverConstraint.appliedPushImpulse = 0f;
 		solverConstraint.penetration = 0f;
 		
-		Vector3f ftorqueAxis1 = Stack.alloc(Vector3f.class);
-		Matrix3f tmpMat = Stack.alloc(Matrix3f.class);
+		Vector3f ftorqueAxis1 = Stack.allocVector3f();
+		Matrix3f tmpMat = Stack.allocMatrix3f();
 		
 		{
 			ftorqueAxis1.cross(rel_pos1, solverConstraint.contactNormal);
@@ -418,7 +418,7 @@ public class SequentialImpulseConstraintSolver extends ConstraintSolver {
 		//	btScalar denom0 = rb0->computeImpulseDenominator(pos1,solverConstraint.m_contactNormal);
 		//	btScalar denom1 = rb1->computeImpulseDenominator(pos2,solverConstraint.m_contactNormal);
 		//#else
-		Vector3f vec = Stack.alloc(Vector3f.class);
+		Vector3f vec = Stack.allocVector3f();
 		float denom0 = 0f;
 		float denom1 = 0f;
 		if (body0 != null) {
@@ -469,7 +469,7 @@ public class SequentialImpulseConstraintSolver extends ConstraintSolver {
 	//		END_PROFILE("refreshManifolds");
 	//	//#endif //FORCE_REFESH_CONTACT_MANIFOLDS
 
-			Transform tmpTrans = Stack.alloc(Transform.class);
+			Transform tmpTrans = Stack.allocTransform();
 
 			//int sizeofSB = sizeof(btSolverBody);
 			//int sizeofSC = sizeof(btSolverConstraint);
@@ -513,21 +513,21 @@ public class SequentialImpulseConstraintSolver extends ConstraintSolver {
 				{
 					int i;
 					
-					Vector3f rel_pos1 = Stack.alloc(Vector3f.class);
-					Vector3f rel_pos2 = Stack.alloc(Vector3f.class);
+					Vector3f rel_pos1 = Stack.allocVector3f();
+					Vector3f rel_pos2 = Stack.allocVector3f();
 
-					Vector3f pos1 = Stack.alloc(Vector3f.class);
-					Vector3f pos2 = Stack.alloc(Vector3f.class);
-					Vector3f vel = Stack.alloc(Vector3f.class);
-					Vector3f torqueAxis0 = Stack.alloc(Vector3f.class);
-					Vector3f torqueAxis1 = Stack.alloc(Vector3f.class);
-					Vector3f vel1 = Stack.alloc(Vector3f.class);
-					Vector3f vel2 = Stack.alloc(Vector3f.class);
-					Vector3f frictionDir1 = Stack.alloc(Vector3f.class);
-					Vector3f frictionDir2 = Stack.alloc(Vector3f.class);
-					Vector3f vec = Stack.alloc(Vector3f.class);
+					Vector3f pos1 = Stack.allocVector3f();
+					Vector3f pos2 = Stack.allocVector3f();
+					Vector3f vel = Stack.allocVector3f();
+					Vector3f torqueAxis0 = Stack.allocVector3f();
+					Vector3f torqueAxis1 = Stack.allocVector3f();
+					Vector3f vel1 = Stack.allocVector3f();
+					Vector3f vel2 = Stack.allocVector3f();
+					Vector3f frictionDir1 = Stack.allocVector3f();
+					Vector3f frictionDir2 = Stack.allocVector3f();
+					Vector3f vec = Stack.allocVector3f();
 
-					Matrix3f tmpMat = Stack.alloc(Matrix3f.class);
+					Matrix3f tmpMat = Stack.allocMatrix3f();
 					
 					for (i = 0; i < numManifolds; i++) {
 						manifold = manifoldPtr.getQuick(manifold_offset+i);
@@ -688,7 +688,7 @@ public class SequentialImpulseConstraintSolver extends ConstraintSolver {
 										solverConstraint.penetration = 0f;
 									}
 									
-									Vector3f tmp = Stack.alloc(Vector3f.class);
+									Vector3f tmp = Stack.allocVector3f();
 
 									// warm starting (or zero if disabled)
 									if ((infoGlobal.solverMode & SolverMode.SOLVER_USE_WARMSTARTING) != 0) {
@@ -1069,21 +1069,21 @@ public class SequentialImpulseConstraintSolver extends ConstraintSolver {
 
 			BulletStats.gTotalContactPoints += numpoints;
 			
-			Vector3f tmpVec = Stack.alloc(Vector3f.class);
-			Matrix3f tmpMat3 = Stack.alloc(Matrix3f.class);
+			Vector3f tmpVec = Stack.allocVector3f();
+			Matrix3f tmpMat3 = Stack.allocMatrix3f();
 
-			Vector3f pos1 = Stack.alloc(Vector3f.class);
-			Vector3f pos2 = Stack.alloc(Vector3f.class);
-			Vector3f rel_pos1 = Stack.alloc(Vector3f.class);
-			Vector3f rel_pos2 = Stack.alloc(Vector3f.class);
-			Vector3f vel1 = Stack.alloc(Vector3f.class);
-			Vector3f vel2 = Stack.alloc(Vector3f.class);
-			Vector3f vel = Stack.alloc(Vector3f.class);
-			Vector3f totalImpulse = Stack.alloc(Vector3f.class);
-			Vector3f torqueAxis0 = Stack.alloc(Vector3f.class);
-			Vector3f torqueAxis1 = Stack.alloc(Vector3f.class);
-			Vector3f ftorqueAxis0 = Stack.alloc(Vector3f.class);
-			Vector3f ftorqueAxis1 = Stack.alloc(Vector3f.class);
+			Vector3f pos1 = Stack.allocVector3f();
+			Vector3f pos2 = Stack.allocVector3f();
+			Vector3f rel_pos1 = Stack.allocVector3f();
+			Vector3f rel_pos2 = Stack.allocVector3f();
+			Vector3f vel1 = Stack.allocVector3f();
+			Vector3f vel2 = Stack.allocVector3f();
+			Vector3f vel = Stack.allocVector3f();
+			Vector3f totalImpulse = Stack.allocVector3f();
+			Vector3f torqueAxis0 = Stack.allocVector3f();
+			Vector3f torqueAxis1 = Stack.allocVector3f();
+			Vector3f ftorqueAxis0 = Stack.allocVector3f();
+			Vector3f ftorqueAxis1 = Stack.allocVector3f();
 			
 			for (int i = 0; i < numpoints; i++) {
 				ManifoldPoint cp = manifoldPtr.getContactPoint(i);
@@ -1095,17 +1095,17 @@ public class SequentialImpulseConstraintSolver extends ConstraintSolver {
 					rel_pos2.sub(pos2, body1.getCenterOfMassPosition(tmpVec));
 
 					// this jacobian entry is re-used for all iterations
-					Matrix3f mat1 = body0.getCenterOfMassTransform(Stack.alloc(Transform.class)).basis;
+					Matrix3f mat1 = body0.getCenterOfMassTransform(Stack.allocTransform()).basis;
 					mat1.transpose();
 
-					Matrix3f mat2 = body1.getCenterOfMassTransform(Stack.alloc(Transform.class)).basis;
+					Matrix3f mat2 = body1.getCenterOfMassTransform(Stack.allocTransform()).basis;
 					mat2.transpose();
 
 					JacobianEntry jac = jacobiansPool.get();
 					jac.init(mat1, mat2,
 							rel_pos1, rel_pos2, cp.normalWorldOnB,
-							body0.getInvInertiaDiagLocal(Stack.alloc(Vector3f.class)), body0.getInvMass(),
-							body1.getInvInertiaDiagLocal(Stack.alloc(Vector3f.class)), body1.getInvMass());
+							body0.getInvInertiaDiagLocal(Stack.allocVector3f()), body0.getInvMass(),
+							body1.getInvInertiaDiagLocal(Stack.allocVector3f()), body1.getInvMass());
 
 					float jacDiagAB = jac.getDiagonal();
 					jacobiansPool.release(jac);

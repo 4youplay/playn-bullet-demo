@@ -45,11 +45,11 @@ public abstract class CollisionShape {
 	public abstract void getAabb(Transform t, Vector3f aabbMin, Vector3f aabbMax);
 
 	public void getBoundingSphere(Vector3f center, float[] radius) {
-		Vector3f tmp = Stack.alloc(Vector3f.class);
+		Vector3f tmp = Stack.allocVector3f();
 
-		Transform tr = Stack.alloc(Transform.class);
+		Transform tr = Stack.allocTransform();
 		tr.setIdentity();
-		Vector3f aabbMin = Stack.alloc(Vector3f.class), aabbMax = Stack.alloc(Vector3f.class);
+		Vector3f aabbMin = Stack.allocVector3f(), aabbMax = Stack.allocVector3f();
 
 		getAabb(tr, aabbMin, aabbMax);
 
@@ -62,7 +62,7 @@ public abstract class CollisionShape {
 
 	///getAngularMotionDisc returns the maximus radius needed for Conservative Advancement to handle time-of-impact with rotations.
 	public float getAngularMotionDisc() {
-		Vector3f center = Stack.alloc(Vector3f.class);
+		Vector3f center = Stack.allocVector3f();
 		float[] disc = new float[1]; // TODO: stack
 		getBoundingSphere(center, disc);
 		disc[0] += center.length();
@@ -108,7 +108,7 @@ public abstract class CollisionShape {
 
 		//add conservative angular motion
 		float angularMotion = angvel.length() * getAngularMotionDisc() * timeStep;
-		Vector3f angularMotion3d = Stack.alloc(Vector3f.class);
+		Vector3f angularMotion3d = Stack.allocVector3f();
 		angularMotion3d.set(angularMotion, angularMotion, angularMotion);
 		temporalAabbMin.set(temporalAabbMinx, temporalAabbMiny, temporalAabbMinz);
 		temporalAabbMax.set(temporalAabbMaxx, temporalAabbMaxy, temporalAabbMaxz);

@@ -77,9 +77,9 @@ public abstract class IDebugDraw {
 
 		int i, j;
 
-		Vector3f edgecoord = Stack.alloc(Vector3f.class);
+		Vector3f edgecoord = Stack.allocVector3f();
 		edgecoord.set(1f, 1f, 1f);
-		Vector3f pa = Stack.alloc(Vector3f.class), pb = Stack.alloc(Vector3f.class);
+		Vector3f pa = Stack.allocVector3f(), pb = Stack.allocVector3f();
 		for (i = 0; i < 4; i++) {
 			for (j = 0; j < 3; j++) {
 				pa.set(edgecoord.x * halfExtents.x, edgecoord.y * halfExtents.y, edgecoord.z * halfExtents.z);

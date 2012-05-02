@@ -121,12 +121,12 @@ public class ConeShape extends ConvexInternalShape {
 
 	@Override
 	public void calculateLocalInertia(float mass, Vector3f inertia) {
-		Transform identity = Stack.alloc(Transform.class);
+		Transform identity = Stack.allocTransform();
 		identity.setIdentity();
-		Vector3f aabbMin = Stack.alloc(Vector3f.class), aabbMax = Stack.alloc(Vector3f.class);
+		Vector3f aabbMin = Stack.allocVector3f(), aabbMax = Stack.allocVector3f();
 		getAabb(identity, aabbMin, aabbMax);
 
-		Vector3f halfExtents = Stack.alloc(Vector3f.class);
+		Vector3f halfExtents = Stack.allocVector3f();
 		halfExtents.sub(aabbMax, aabbMin);
 		halfExtents.scale(0.5f);
 

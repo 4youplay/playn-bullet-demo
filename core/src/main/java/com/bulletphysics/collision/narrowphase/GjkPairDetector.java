@@ -72,15 +72,15 @@ public class GjkPairDetector extends DiscreteCollisionDetectorInterface {
 	
 	@StaticAlloc
 	public void getClosestPoints(ClosestPointInput input, Result output, IDebugDraw debugDraw, boolean swapResults) {
-		Vector3f tmp = Stack.alloc(Vector3f.class);
+		Vector3f tmp = Stack.allocVector3f();
 
 		float distance = 0f;
-		Vector3f normalInB = Stack.alloc(Vector3f.class);
+		Vector3f normalInB = Stack.allocVector3f();
 		normalInB.set(0f, 0f, 0f);
-		Vector3f pointOnA = Stack.alloc(Vector3f.class), pointOnB = Stack.alloc(Vector3f.class);
+		Vector3f pointOnA = Stack.allocVector3f(), pointOnB = Stack.allocVector3f();
 		Transform localTransA = Stack.alloc(input.transformA);
 		Transform localTransB = Stack.alloc(input.transformB);
-		Vector3f positionOffset = Stack.alloc(Vector3f.class);
+		Vector3f positionOffset = Stack.allocVector3f();
 		positionOffset.add(localTransA.origin, localTransB.origin);
 		positionOffset.scale(0.5f);
 		localTransA.origin.sub(positionOffset);
@@ -116,18 +116,18 @@ public class GjkPairDetector extends DiscreteCollisionDetectorInterface {
 
 			simplexSolver.reset();
 
-			Vector3f seperatingAxisInA = Stack.alloc(Vector3f.class);
-			Vector3f seperatingAxisInB = Stack.alloc(Vector3f.class);
+			Vector3f seperatingAxisInA = Stack.allocVector3f();
+			Vector3f seperatingAxisInB = Stack.allocVector3f();
 			
-			Vector3f pInA = Stack.alloc(Vector3f.class);
-			Vector3f qInB = Stack.alloc(Vector3f.class);
+			Vector3f pInA = Stack.allocVector3f();
+			Vector3f qInB = Stack.allocVector3f();
 			
-			Vector3f pWorld = Stack.alloc(Vector3f.class);
-			Vector3f qWorld = Stack.alloc(Vector3f.class);
-			Vector3f w = Stack.alloc(Vector3f.class);
+			Vector3f pWorld = Stack.allocVector3f();
+			Vector3f qWorld = Stack.allocVector3f();
+			Vector3f w = Stack.allocVector3f();
 			
-			Vector3f tmpPointOnA = Stack.alloc(Vector3f.class), tmpPointOnB = Stack.alloc(Vector3f.class);
-			Vector3f tmpNormalInB = Stack.alloc(Vector3f.class);
+			Vector3f tmpPointOnA = Stack.allocVector3f(), tmpPointOnB = Stack.allocVector3f();
+			Vector3f tmpNormalInB = Stack.allocVector3f();
 			
 			for (;;) //while (true)
 			{

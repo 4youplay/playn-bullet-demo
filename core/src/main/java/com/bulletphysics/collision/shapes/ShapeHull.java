@@ -60,7 +60,7 @@ public class ShapeHull {
 	}
 
 	public boolean buildHull(float margin) {
-		Vector3f norm = Stack.alloc(Vector3f.class);
+		Vector3f norm = Stack.allocVector3f();
 
 		int numSampleDirections = NUM_UNITSPHERE_POINTS;
 		{

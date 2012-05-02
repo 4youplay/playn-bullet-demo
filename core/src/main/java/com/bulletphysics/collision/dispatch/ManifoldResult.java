@@ -100,11 +100,11 @@ public class ManifoldResult extends DiscreteCollisionDetectorInterface.Result {
 
 		boolean isSwapped = manifoldPtr.getBody0() != body0;
 
-		Vector3f pointA = Stack.alloc(Vector3f.class);
+		Vector3f pointA = Stack.allocVector3f();
 		pointA.scaleAdd(depth, normalOnBInWorld, pointInWorld);
 
-		Vector3f localA = Stack.alloc(Vector3f.class);
-		Vector3f localB = Stack.alloc(Vector3f.class);
+		Vector3f localA = Stack.allocVector3f();
+		Vector3f localB = Stack.allocVector3f();
 
 		if (isSwapped) {
 			rootTransB.invXform(pointA, localA);

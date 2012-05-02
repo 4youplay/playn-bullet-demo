@@ -70,24 +70,24 @@ public class GjkConvexCast extends ConvexCast {
 
 		// compute linear velocity for this interval, to interpolate
 		// assume no rotation/angular velocity, assert here?
-		Vector3f linVelA = Stack.alloc(Vector3f.class);
-		Vector3f linVelB = Stack.alloc(Vector3f.class);
+		Vector3f linVelA = Stack.allocVector3f();
+		Vector3f linVelB = Stack.allocVector3f();
 
 		linVelA.sub(toA.origin, fromA.origin);
 		linVelB.sub(toB.origin, fromB.origin);
 
 		float radius = 0.001f;
 		float lambda = 0f;
-		Vector3f v = Stack.alloc(Vector3f.class);
+		Vector3f v = Stack.allocVector3f();
 		v.set(1f, 0f, 0f);
 
 		int maxIter = MAX_ITERATIONS;
 
-		Vector3f n = Stack.alloc(Vector3f.class);
+		Vector3f n = Stack.allocVector3f();
 		n.set(0f, 0f, 0f);
 		boolean hasResult = false;
-		Vector3f c = Stack.alloc(Vector3f.class);
-		Vector3f r = Stack.alloc(Vector3f.class);
+		Vector3f c = Stack.allocVector3f();
+		Vector3f r = Stack.allocVector3f();
 		r.sub(linVelA, linVelB);
 
 		float lastLambda = lambda;
@@ -96,7 +96,7 @@ public class GjkConvexCast extends ConvexCast {
 		int numIter = 0;
 		// first solution, using GJK
 
-		Transform identityTrans = Stack.alloc(Transform.class);
+		Transform identityTrans = Stack.allocTransform();
 		identityTrans.setIdentity();
 
 		//result.drawCoordSystem(sphereTr);

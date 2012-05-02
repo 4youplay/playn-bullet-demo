@@ -53,9 +53,9 @@ public abstract class ConvexInternalShape extends ConvexShape {
 	@Override
 	public void getAabbSlow(Transform trans, Vector3f minAabb, Vector3f maxAabb) {
 		float margin = getMargin();
-		Vector3f vec = Stack.alloc(Vector3f.class);
-		Vector3f tmp1 = Stack.alloc(Vector3f.class);
-		Vector3f tmp2 = Stack.alloc(Vector3f.class);
+		Vector3f vec = Stack.allocVector3f();
+		Vector3f tmp1 = Stack.allocVector3f();
+		Vector3f tmp2 = Stack.allocVector3f();
 		
 		for (int i=0;i<3;i++)
 		{

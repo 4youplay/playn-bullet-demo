@@ -79,27 +79,27 @@ public class GhostObject extends CollisionObject {
 	}
 
 	public void convexSweepTest(ConvexShape castShape, Transform convexFromWorld, Transform convexToWorld, CollisionWorld.ConvexResultCallback resultCallback, float allowedCcdPenetration) {
-		Transform convexFromTrans = Stack.alloc(Transform.class);
-		Transform convexToTrans = Stack.alloc(Transform.class);
+		Transform convexFromTrans = Stack.allocTransform();
+		Transform convexToTrans = Stack.allocTransform();
 
 		convexFromTrans.set(convexFromWorld);
 		convexToTrans.set(convexToWorld);
 
-		Vector3f castShapeAabbMin = Stack.alloc(Vector3f.class);
-		Vector3f castShapeAabbMax = Stack.alloc(Vector3f.class);
+		Vector3f castShapeAabbMin = Stack.allocVector3f();
+		Vector3f castShapeAabbMax = Stack.allocVector3f();
 
 		// compute AABB that encompasses angular movement
 		{
-			Vector3f linVel = Stack.alloc(Vector3f.class);
-			Vector3f angVel = Stack.alloc(Vector3f.class);
+			Vector3f linVel = Stack.allocVector3f();
+			Vector3f angVel = Stack.allocVector3f();
 			TransformUtil.calculateVelocity(convexFromTrans, convexToTrans, 1f, linVel, angVel);
-			Transform R = Stack.alloc(Transform.class);
+			Transform R = Stack.allocTransform();
 			R.setIdentity();
-			R.setRotation(convexFromTrans.getRotation(Stack.alloc(Quat4f.class)));
+			R.setRotation(convexFromTrans.getRotation(Stack.allocQuat4f()));
 			castShape.calculateTemporalAabb(R, linVel, angVel, 1f, castShapeAabbMin, castShapeAabbMax);
 		}
 
-		Transform tmpTrans = Stack.alloc(Transform.class);
+		Transform tmpTrans = Stack.allocTransform();
 
 		// go over all objects, and if the ray intersects their aabb + cast shape aabb,
 		// do a ray-shape query using convexCaster (CCD)
@@ -109,12 +109,12 @@ public class GhostObject extends CollisionObject {
 			// only perform raycast if filterMask matches
 			if (resultCallback.needsCollision(collisionObject.getBroadphaseHandle())) {
 				//RigidcollisionObject* collisionObject = ctrl->GetRigidcollisionObject();
-				Vector3f collisionObjectAabbMin = Stack.alloc(Vector3f.class);
-				Vector3f collisionObjectAabbMax = Stack.alloc(Vector3f.class);
+				Vector3f collisionObjectAabbMin = Stack.allocVector3f();
+				Vector3f collisionObjectAabbMax = Stack.allocVector3f();
 				collisionObject.getCollisionShape().getAabb(collisionObject.getWorldTransform(tmpTrans), collisionObjectAabbMin, collisionObjectAabbMax);
 				AabbUtil2.aabbExpand(collisionObjectAabbMin, collisionObjectAabbMax, castShapeAabbMin, castShapeAabbMax);
 				float[] hitLambda = new float[]{1f}; // could use resultCallback.closestHitFraction, but needs testing
-				Vector3f hitNormal = Stack.alloc(Vector3f.class);
+				Vector3f hitNormal = Stack.allocVector3f();
 				if (AabbUtil2.rayAabb(convexFromWorld.origin, convexToWorld.origin, collisionObjectAabbMin, collisionObjectAabbMax, hitLambda, hitNormal)) {
 					CollisionWorld.objectQuerySingle(castShape, convexFromTrans, convexToTrans,
 					                                 collisionObject,
@@ -128,14 +128,14 @@ public class GhostObject extends CollisionObject {
 	}
 
 	public void rayTest(Vector3f rayFromWorld, Vector3f rayToWorld, CollisionWorld.RayResultCallback resultCallback) {
-		Transform rayFromTrans = Stack.alloc(Transform.class);
+		Transform rayFromTrans = Stack.allocTransform();
 		rayFromTrans.setIdentity();
 		rayFromTrans.origin.set(rayFromWorld);
-		Transform rayToTrans = Stack.alloc(Transform.class);
+		Transform rayToTrans = Stack.allocTransform();
 		rayToTrans.setIdentity();
 		rayToTrans.origin.set(rayToWorld);
 
-		Transform tmpTrans = Stack.alloc(Transform.class);
+		Transform tmpTrans = Stack.allocTransform();
 
 		for (int i=0; i<overlappingObjects.size(); i++) {
 			CollisionObject collisionObject = overlappingObjects.getQuick(i);

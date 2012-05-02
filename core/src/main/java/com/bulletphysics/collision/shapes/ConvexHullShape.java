@@ -93,7 +93,7 @@ public class ConvexHullShape extends PolyhedralConvexShape {
 		}
 
 
-		Vector3f vtx = Stack.alloc(Vector3f.class);
+		Vector3f vtx = Stack.allocVector3f();
 		for (int i = 0; i < points.size(); i++) {
 			VectorUtil.mul(vtx, points.getQuick(i), localScaling);
 
@@ -121,7 +121,7 @@ public class ConvexHullShape extends PolyhedralConvexShape {
 				wcoords[i] = -1e30f;
 			}
 		}
-		Vector3f vtx = Stack.alloc(Vector3f.class);
+		Vector3f vtx = Stack.allocVector3f();
 		for (int i = 0; i < points.size(); i++) {
 			VectorUtil.mul(vtx, points.getQuick(i), localScaling);
 

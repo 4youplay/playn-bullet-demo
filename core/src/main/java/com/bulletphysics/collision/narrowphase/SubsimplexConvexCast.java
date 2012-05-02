@@ -64,12 +64,12 @@ public class SubsimplexConvexCast extends ConvexCast {
 	}
 	
 	public boolean calcTimeOfImpact(Transform fromA, Transform toA, Transform fromB, Transform toB, CastResult result) {
-		Vector3f tmp = Stack.alloc(Vector3f.class);
+		Vector3f tmp = Stack.allocVector3f();
 		
 		simplexSolver.reset();
 
-		Vector3f linVelA = Stack.alloc(Vector3f.class);
-		Vector3f linVelB = Stack.alloc(Vector3f.class);
+		Vector3f linVelA = Stack.allocVector3f();
+		Vector3f linVelB = Stack.allocVector3f();
 		linVelA.sub(toA.origin, fromA.origin);
 		linVelB.sub(toB.origin, fromB.origin);
 		
@@ -79,28 +79,28 @@ public class SubsimplexConvexCast extends ConvexCast {
 		Transform interpolatedTransB = Stack.alloc(fromB);
 
 		// take relative motion
-		Vector3f r = Stack.alloc(Vector3f.class);
+		Vector3f r = Stack.allocVector3f();
 		r.sub(linVelA, linVelB);
 		
-		Vector3f v = Stack.alloc(Vector3f.class);
+		Vector3f v = Stack.allocVector3f();
 
 		tmp.negate(r);
 		MatrixUtil.transposeTransform(tmp, tmp, fromA.basis);
-		Vector3f supVertexA = convexA.localGetSupportingVertex(tmp, Stack.alloc(Vector3f.class));
+		Vector3f supVertexA = convexA.localGetSupportingVertex(tmp, Stack.allocVector3f());
 		fromA.transform(supVertexA);
 		
 		MatrixUtil.transposeTransform(tmp, r, fromB.basis);
-		Vector3f supVertexB = convexB.localGetSupportingVertex(tmp, Stack.alloc(Vector3f.class));
+		Vector3f supVertexB = convexB.localGetSupportingVertex(tmp, Stack.allocVector3f());
 		fromB.transform(supVertexB);
 		
 		v.sub(supVertexA, supVertexB);
 		
 		int maxIter = MAX_ITERATIONS;
 
-		Vector3f n = Stack.alloc(Vector3f.class);
+		Vector3f n = Stack.allocVector3f();
 		n.set(0f, 0f, 0f);
 		boolean hasResult = false;
-		Vector3f c = Stack.alloc(Vector3f.class);
+		Vector3f c = Stack.allocVector3f();
 
 		float lastLambda = lambda;
 
@@ -110,7 +110,7 @@ public class SubsimplexConvexCast extends ConvexCast {
 		//#else
 		float epsilon = 0.0001f;
 		//#endif
-		Vector3f w = Stack.alloc(Vector3f.class), p = Stack.alloc(Vector3f.class);
+		Vector3f w = Stack.allocVector3f(), p = Stack.allocVector3f();
 		float VdotR;
 
 		while ((dist2 > epsilon) && (maxIter--) != 0) {
@@ -184,8 +184,8 @@ public class SubsimplexConvexCast extends ConvexCast {
 		if (result.normal.dot(r) >= -result.allowedPenetration)
 			return false;
 
-		Vector3f hitA = Stack.alloc(Vector3f.class);
-		Vector3f hitB = Stack.alloc(Vector3f.class);
+		Vector3f hitA = Stack.allocVector3f();
+		Vector3f hitB = Stack.allocVector3f();
 		simplexSolver.compute_points(hitA,hitB);
 		result.hitPoint.set(hitB);
 		return true;

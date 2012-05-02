@@ -85,21 +85,21 @@ public class TranslationalLimitMotor {
 
 	@StaticAlloc
 	public float solveLinearAxis(float timeStep, float jacDiagABInv, RigidBody body1, Vector3f pointInA, RigidBody body2, Vector3f pointInB, int limit_index, Vector3f axis_normal_on_a, Vector3f anchorPos) {
-		Vector3f tmp = Stack.alloc(Vector3f.class);
-		Vector3f tmpVec = Stack.alloc(Vector3f.class);
+		Vector3f tmp = Stack.allocVector3f();
+		Vector3f tmpVec = Stack.allocVector3f();
 		
 		// find relative velocity
-		Vector3f rel_pos1 = Stack.alloc(Vector3f.class);
+		Vector3f rel_pos1 = Stack.allocVector3f();
 		//rel_pos1.sub(pointInA, body1.getCenterOfMassPosition(tmpVec));
 		rel_pos1.sub(anchorPos, body1.getCenterOfMassPosition(tmpVec));
 
-		Vector3f rel_pos2 = Stack.alloc(Vector3f.class);
+		Vector3f rel_pos2 = Stack.allocVector3f();
 		//rel_pos2.sub(pointInB, body2.getCenterOfMassPosition(tmpVec));
 		rel_pos2.sub(anchorPos, body2.getCenterOfMassPosition(tmpVec));
 
-		Vector3f vel1 = body1.getVelocityInLocalPoint(rel_pos1, Stack.alloc(Vector3f.class));
-		Vector3f vel2 = body2.getVelocityInLocalPoint(rel_pos2, Stack.alloc(Vector3f.class));
-		Vector3f vel = Stack.alloc(Vector3f.class);
+		Vector3f vel1 = body1.getVelocityInLocalPoint(rel_pos1, Stack.allocVector3f());
+		Vector3f vel2 = body2.getVelocityInLocalPoint(rel_pos2, Stack.allocVector3f());
+		Vector3f vel = Stack.allocVector3f();
 		vel.sub(vel1, vel2);
 
 		float rel_vel = axis_normal_on_a.dot(vel);
@@ -142,7 +142,7 @@ public class TranslationalLimitMotor {
 		VectorUtil.setCoord(accumulatedImpulse, limit_index, sum > hi ? 0f : sum < lo ? 0f : sum);
 		normalImpulse = VectorUtil.getCoord(accumulatedImpulse, limit_index) - oldNormalImpulse;
 
-		Vector3f impulse_vector = Stack.alloc(Vector3f.class);
+		Vector3f impulse_vector = Stack.allocVector3f();
 		impulse_vector.scale(normalImpulse, axis_normal_on_a);
 		body1.applyImpulse(impulse_vector, rel_pos1);
 

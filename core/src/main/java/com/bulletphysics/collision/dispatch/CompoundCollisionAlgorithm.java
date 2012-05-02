@@ -94,11 +94,11 @@ public class CompoundCollisionAlgorithm extends CollisionAlgorithm {
 		// then use each overlapping node AABB against Tree0
 		// and vise versa.
 
-		Transform tmpTrans = Stack.alloc(Transform.class);
-		Transform orgTrans = Stack.alloc(Transform.class);
-		Transform childTrans = Stack.alloc(Transform.class);
-		Transform orgInterpolationTrans = Stack.alloc(Transform.class);
-		Transform newChildWorldTrans = Stack.alloc(Transform.class);
+		Transform tmpTrans = Stack.allocTransform();
+		Transform orgTrans = Stack.allocTransform();
+		Transform childTrans = Stack.allocTransform();
+		Transform orgInterpolationTrans = Stack.allocTransform();
+		Transform newChildWorldTrans = Stack.allocTransform();
 
 		int numChildren = childCollisionAlgorithms.size();
 		int i;
@@ -142,9 +142,9 @@ public class CompoundCollisionAlgorithm extends CollisionAlgorithm {
 		// then use each overlapping node AABB against Tree0
 		// and vise versa.
 
-		Transform tmpTrans = Stack.alloc(Transform.class);
-		Transform orgTrans = Stack.alloc(Transform.class);
-		Transform childTrans = Stack.alloc(Transform.class);
+		Transform tmpTrans = Stack.allocTransform();
+		Transform orgTrans = Stack.allocTransform();
+		Transform childTrans = Stack.allocTransform();
 		float hitFraction = 1f;
 
 		int numChildren = childCollisionAlgorithms.size();

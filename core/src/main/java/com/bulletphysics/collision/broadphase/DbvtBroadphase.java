@@ -208,10 +208,10 @@ public class DbvtBroadphase extends BroadphaseInterface {
 		else {
 			// dynamic set:
 			if (DbvtAabbMm.Intersect(proxy.leaf.volume, aabb)) {/* Moving				*/
-				Vector3f delta = Stack.alloc(Vector3f.class);
+				Vector3f delta = Stack.allocVector3f();
 				delta.add(aabbMin, aabbMax);
 				delta.scale(0.5f);
-				delta.sub(proxy.aabb.Center(Stack.alloc(Vector3f.class)));
+				delta.sub(proxy.aabb.Center(Stack.allocVector3f()));
 				//#ifdef DBVT_BP_MARGIN
 				delta.scale(predictedframes);
 				sets[0].update(proxy.leaf, aabb, delta, DBVT_BP_MARGIN);

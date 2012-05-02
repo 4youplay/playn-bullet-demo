@@ -39,11 +39,11 @@ class Quantization {
 
 	public static void bt_calc_quantization_parameters(Vector3f outMinBound, Vector3f outMaxBound, Vector3f bvhQuantization, Vector3f srcMinBound, Vector3f srcMaxBound, float quantizationMargin) {
 		// enlarge the AABB to avoid division by zero when initializing the quantization values
-		Vector3f clampValue = Stack.alloc(Vector3f.class);
+		Vector3f clampValue = Stack.allocVector3f();
 		clampValue.set(quantizationMargin, quantizationMargin, quantizationMargin);
 		outMinBound.sub(srcMinBound, clampValue);
 		outMaxBound.add(srcMaxBound, clampValue);
-		Vector3f aabbSize = Stack.alloc(Vector3f.class);
+		Vector3f aabbSize = Stack.allocVector3f();
 		aabbSize.sub(outMaxBound, outMinBound);
 		bvhQuantization.set(65535.0f, 65535.0f, 65535.0f);
 		VectorUtil.div(bvhQuantization, bvhQuantization, aabbSize);
@@ -54,7 +54,7 @@ class Quantization {
 		VectorUtil.setMax(clampedPoint, min_bound);
 		VectorUtil.setMin(clampedPoint, max_bound);
 
-		Vector3f v = Stack.alloc(Vector3f.class);
+		Vector3f v = Stack.allocVector3f();
 		v.sub(clampedPoint, min_bound);
 		VectorUtil.mul(v, v, bvhQuantization);
 

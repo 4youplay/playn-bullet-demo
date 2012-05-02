@@ -129,7 +129,7 @@ public class BoxCollision {
 		 * Calc the transformation relative  1 to 0. Inverts matrics by transposing.
 		 */
 		public void calc_from_homogenic(Transform trans0, Transform trans1) {
-			Transform temp_trans = Stack.alloc(Transform.class);
+			Transform temp_trans = Stack.allocTransform();
 			temp_trans.inverse(trans0);
 			temp_trans.mul(trans1);
 
@@ -147,7 +147,7 @@ public class BoxCollision {
 			T1to0.negate(trans0.origin);
 			R1to0.transform(T1to0);
 
-			Vector3f tmp = Stack.alloc(Vector3f.class);
+			Vector3f tmp = Stack.allocVector3f();
 			tmp.set(trans1.origin);
 			R1to0.transform(tmp);
 			T1to0.add(tmp);
@@ -162,7 +162,7 @@ public class BoxCollision {
 				point = Stack.alloc(point);
 			}
 			
-			Vector3f tmp = Stack.alloc(Vector3f.class);
+			Vector3f tmp = Stack.allocVector3f();
 			R1to0.getRow(0, tmp);
 			out.x = tmp.dot(point) + T1to0.x;
 			R1to0.getRow(1, tmp);
@@ -261,19 +261,19 @@ public class BoxCollision {
 		 * Apply a transform to an AABB.
 		 */
 		public void appy_transform(Transform trans) {
-			Vector3f tmp = Stack.alloc(Vector3f.class);
+			Vector3f tmp = Stack.allocVector3f();
 
-			Vector3f center = Stack.alloc(Vector3f.class);
+			Vector3f center = Stack.allocVector3f();
 			center.add(max, min);
 			center.scale(0.5f);
 
-			Vector3f extends_ = Stack.alloc(Vector3f.class);
+			Vector3f extends_ = Stack.allocVector3f();
 			extends_.sub(max, center);
 
 			// Compute new center
 			trans.transform(center);
 
-			Vector3f textends = Stack.alloc(Vector3f.class);
+			Vector3f textends = Stack.allocVector3f();
 
 			trans.basis.getRow(0, tmp);
 			tmp.absolute();
@@ -295,19 +295,19 @@ public class BoxCollision {
 		 * Apply a transform to an AABB.
 		 */
 		public void appy_transform_trans_cache(BoxBoxTransformCache trans) {
-			Vector3f tmp = Stack.alloc(Vector3f.class);
+			Vector3f tmp = Stack.allocVector3f();
 
-			Vector3f center = Stack.alloc(Vector3f.class);
+			Vector3f center = Stack.allocVector3f();
 			center.add(max, min);
 			center.scale(0.5f);
 
-			Vector3f extends_ = Stack.alloc(Vector3f.class);
+			Vector3f extends_ = Stack.allocVector3f();
 			extends_.sub(max, center);
 
 			// Compute new center
 			trans.transform(center, center);
 
-			Vector3f textends = Stack.alloc(Vector3f.class);
+			Vector3f textends = Stack.allocVector3f();
 
 			trans.R1to0.getRow(0, tmp);
 			tmp.absolute();
@@ -394,7 +394,7 @@ public class BoxCollision {
 		 * @param vdir     a vec3f with the direction of the ray
 		 */
 		public boolean collide_ray(Vector3f vorigin, Vector3f vdir) {
-			Vector3f extents = Stack.alloc(Vector3f.class), center = Stack.alloc(Vector3f.class);
+			Vector3f extents = Stack.allocVector3f(), center = Stack.allocVector3f();
 			get_center_extend(center, extents);
 
 			float Dx = vorigin.x - center.x;
@@ -419,10 +419,10 @@ public class BoxCollision {
 		}
 	
 		public void projection_interval(Vector3f direction, float[] vmin, float[] vmax) {
-			Vector3f tmp = Stack.alloc(Vector3f.class);
+			Vector3f tmp = Stack.allocVector3f();
 
-			Vector3f center = Stack.alloc(Vector3f.class);
-			Vector3f extend = Stack.alloc(Vector3f.class);
+			Vector3f center = Stack.allocVector3f();
+			Vector3f extend = Stack.allocVector3f();
 			get_center_extend(center, extend);
 
 			float _fOrigin = direction.dot(center);
@@ -433,7 +433,7 @@ public class BoxCollision {
 		}
 
 		public PlaneIntersectionType plane_classify(Vector4f plane) {
-			Vector3f tmp = Stack.alloc(Vector3f.class);
+			Vector3f tmp = Stack.allocVector3f();
 
 			float[] _fmin = new float[1], _fmax = new float[1];
 			tmp.set(plane.x, plane.y, plane.z);
@@ -466,15 +466,15 @@ public class BoxCollision {
 		 * transcache is the transformation cache from box to this AABB.
 		 */
 		public boolean overlapping_trans_cache(AABB box, BoxBoxTransformCache transcache, boolean fulltest) {
-			Vector3f tmp = Stack.alloc(Vector3f.class);
+			Vector3f tmp = Stack.allocVector3f();
 
 			// Taken from OPCODE
-			Vector3f ea = Stack.alloc(Vector3f.class), eb = Stack.alloc(Vector3f.class); //extends
-			Vector3f ca = Stack.alloc(Vector3f.class), cb = Stack.alloc(Vector3f.class); //extends
+			Vector3f ea = Stack.allocVector3f(), eb = Stack.allocVector3f(); //extends
+			Vector3f ca = Stack.allocVector3f(), cb = Stack.allocVector3f(); //extends
 			get_center_extend(ca, ea);
 			box.get_center_extend(cb, eb);
 
-			Vector3f T = Stack.alloc(Vector3f.class);
+			Vector3f T = Stack.allocVector3f();
 			float t, t2;
 
 			// Class I : A's basis vectors
@@ -534,20 +534,20 @@ public class BoxCollision {
 			if (!collide_plane(triangle_plane)) {
 				return false;
 			}
-			Vector3f center = Stack.alloc(Vector3f.class), extends_ = Stack.alloc(Vector3f.class);
+			Vector3f center = Stack.allocVector3f(), extends_ = Stack.allocVector3f();
 			get_center_extend(center, extends_);
 
-			Vector3f v1 = Stack.alloc(Vector3f.class);
+			Vector3f v1 = Stack.allocVector3f();
 			v1.sub(p1, center);
-			Vector3f v2 = Stack.alloc(Vector3f.class);
+			Vector3f v2 = Stack.allocVector3f();
 			v2.sub(p2, center);
-			Vector3f v3 = Stack.alloc(Vector3f.class);
+			Vector3f v3 = Stack.allocVector3f();
 			v3.sub(p3, center);
 
 			// First axis
-			Vector3f diff = Stack.alloc(Vector3f.class);
+			Vector3f diff = Stack.allocVector3f();
 			diff.sub(v2, v1);
-			Vector3f abs_diff = Stack.alloc(Vector3f.class);
+			Vector3f abs_diff = Stack.allocVector3f();
 			abs_diff.absolute(diff);
 
 			// Test With X axis

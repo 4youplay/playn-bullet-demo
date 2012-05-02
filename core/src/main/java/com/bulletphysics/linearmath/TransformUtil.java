@@ -75,7 +75,7 @@ public class TransformUtil {
 		// Exponential map
 		// google for "Practical Parameterization of Rotations Using the Exponential Map", F. Sebastian Grassia
 		
-		Vector3f axis = Stack.alloc(Vector3f.class);
+		Vector3f axis = Stack.allocVector3f();
 		float fAngle = angvel.length();
 
 		// limit the angular motion
@@ -91,11 +91,11 @@ public class TransformUtil {
 			// sync(fAngle) = sin(c*fAngle)/t
 			axis.scale((float) Math.sin(0.5f * fAngle * timeStep) / fAngle, angvel);
 		}
-		Quat4f dorn = Stack.alloc(Quat4f.class);
+		Quat4f dorn = Stack.allocQuat4f();
 		dorn.set(axis.x, axis.y, axis.z, (float) Math.cos(fAngle * timeStep * 0.5f));
-		Quat4f orn0 = curTrans.getRotation(Stack.alloc(Quat4f.class));
+		Quat4f orn0 = curTrans.getRotation(Stack.allocQuat4f());
 
-		Quat4f predictedOrn = Stack.alloc(Quat4f.class);
+		Quat4f predictedOrn = Stack.allocQuat4f();
 		predictedOrn.mul(dorn, orn0);
 		predictedOrn.normalize();
 //  #endif
@@ -106,7 +106,7 @@ public class TransformUtil {
 		linVel.sub(transform1.origin, transform0.origin);
 		linVel.scale(1f / timeStep);
 
-		Vector3f axis = Stack.alloc(Vector3f.class);
+		Vector3f axis = Stack.allocVector3f();
 		float[] angle = new float[1];
 		calculateDiffAxisAngle(transform0, transform1, axis, angle);
 		angVel.scale(angle[0] / timeStep, axis);
@@ -119,14 +119,14 @@ public class TransformUtil {
 //		btQuaternion orn1 = orn0.farthest(orn1a);
 //		btQuaternion dorn = orn1 * orn0.inverse();
 // #else
-		Matrix3f tmp = Stack.alloc(Matrix3f.class);
+		Matrix3f tmp = Stack.allocMatrix3f();
 		tmp.set(transform0.basis);
 		MatrixUtil.invert(tmp);
 
-		Matrix3f dmat = Stack.alloc(Matrix3f.class);
+		Matrix3f dmat = Stack.allocMatrix3f();
 		dmat.mul(transform1.basis, tmp);
 
-		Quat4f dorn = Stack.alloc(Quat4f.class);
+		Quat4f dorn = Stack.allocQuat4f();
 		MatrixUtil.getRotation(dmat, dorn);
 // #endif
 

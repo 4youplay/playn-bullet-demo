@@ -102,7 +102,7 @@ public class GImpactMeshShape extends GImpactShapeInterface {
 		int i = getMeshPartCount();
 		float partmass = mass / (float) i;
 
-		Vector3f partinertia = Stack.alloc(Vector3f.class);
+		Vector3f partinertia = Stack.allocVector3f();
 
 		while ((i--) != 0) {
 			getMeshPart(i).calculateLocalInertia(partmass, partinertia);
@@ -228,7 +228,7 @@ public class GImpactMeshShape extends GImpactShapeInterface {
 
 	@Override
 	protected void calcLocalAABB() {
-		AABB tmpAABB = Stack.alloc(AABB.class);
+		AABB tmpAABB = Stack.allocAABB();
 
 		localAABB.invalidate();
 		int i = mesh_parts.size();

@@ -145,10 +145,10 @@ public class ConvexConvexAlgorithm extends CollisionAlgorithm {
 	
 	@Override
 	public float calculateTimeOfImpact(CollisionObject col0, CollisionObject col1, DispatcherInfo dispatchInfo, ManifoldResult resultOut) {
-		Vector3f tmp = Stack.alloc(Vector3f.class);
+		Vector3f tmp = Stack.allocVector3f();
 		
-		Transform tmpTrans1 = Stack.alloc(Transform.class);
-		Transform tmpTrans2 = Stack.alloc(Transform.class);
+		Transform tmpTrans1 = Stack.allocTransform();
+		Transform tmpTrans2 = Stack.allocTransform();
 
 		// Rather then checking ALL pairs, only calculate TOI when motion exceeds threshold
 
@@ -171,8 +171,8 @@ public class ConvexConvexAlgorithm extends CollisionAlgorithm {
 			return 1f;
 		}
 		
-		Transform tmpTrans3 = Stack.alloc(Transform.class);
-		Transform tmpTrans4 = Stack.alloc(Transform.class);
+		Transform tmpTrans3 = Stack.allocTransform();
+		Transform tmpTrans4 = Stack.allocTransform();
 
 		// An adhoc way of testing the Continuous Collision Detection algorithms
 		// One object is approximated as a sphere, to simplify things

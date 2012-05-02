@@ -384,7 +384,7 @@ public class RigidBody extends CollisionObject {
 	public void applyForce(Vector3f force, Vector3f rel_pos) {
 		applyCentralForce(force);
 		
-		Vector3f tmp = Stack.alloc(Vector3f.class);
+		Vector3f tmp = Stack.allocVector3f();
 		tmp.cross(rel_pos, force);
 		tmp.scale(angularFactor);
 		applyTorque(tmp);
@@ -406,7 +406,7 @@ public class RigidBody extends CollisionObject {
 		if (inverseMass != 0f) {
 			applyCentralImpulse(impulse);
 			if (angularFactor != 0f) {
-				Vector3f tmp = Stack.alloc(Vector3f.class);
+				Vector3f tmp = Stack.allocVector3f();
 				tmp.cross(rel_pos, impulse);
 				tmp.scale(angularFactor);
 				applyTorqueImpulse(tmp);
@@ -432,7 +432,7 @@ public class RigidBody extends CollisionObject {
 	}
 	
 	public void updateInertiaTensor() {
-		Matrix3f mat1 = Stack.alloc(Matrix3f.class);
+		Matrix3f mat1 = Stack.allocMatrix3f();
 		MatrixUtil.scale(mat1, worldTransform.basis, invInertiaLocal);
 
 		Matrix3f mat2 = Stack.alloc(worldTransform.basis);
@@ -496,24 +496,24 @@ public class RigidBody extends CollisionObject {
 	}
 
 	public float computeImpulseDenominator(Vector3f pos, Vector3f normal) {
-		Vector3f r0 = Stack.alloc(Vector3f.class);
-		r0.sub(pos, getCenterOfMassPosition(Stack.alloc(Vector3f.class)));
+		Vector3f r0 = Stack.allocVector3f();
+		r0.sub(pos, getCenterOfMassPosition(Stack.allocVector3f()));
 
-		Vector3f c0 = Stack.alloc(Vector3f.class);
+		Vector3f c0 = Stack.allocVector3f();
 		c0.cross(r0, normal);
 
-		Vector3f tmp = Stack.alloc(Vector3f.class);
-		MatrixUtil.transposeTransform(tmp, c0, getInvInertiaTensorWorld(Stack.alloc(Matrix3f.class)));
+		Vector3f tmp = Stack.allocVector3f();
+		MatrixUtil.transposeTransform(tmp, c0, getInvInertiaTensorWorld(Stack.allocMatrix3f()));
 
-		Vector3f vec = Stack.alloc(Vector3f.class);
+		Vector3f vec = Stack.allocVector3f();
 		vec.cross(tmp, r0);
 
 		return inverseMass + normal.dot(vec);
 	}
 
 	public float computeAngularImpulseDenominator(Vector3f axis) {
-		Vector3f vec = Stack.alloc(Vector3f.class);
-		MatrixUtil.transposeTransform(vec, axis, getInvInertiaTensorWorld(Stack.alloc(Matrix3f.class)));
+		Vector3f vec = Stack.allocVector3f();
+		MatrixUtil.transposeTransform(vec, axis, getInvInertiaTensorWorld(Stack.allocMatrix3f()));
 		return axis.dot(vec);
 	}
 
@@ -522,8 +522,8 @@ public class RigidBody extends CollisionObject {
 			return;
 		}
 
-		if ((getLinearVelocity(Stack.alloc(Vector3f.class)).lengthSquared() < linearSleepingThreshold * linearSleepingThreshold) &&
-				(getAngularVelocity(Stack.alloc(Vector3f.class)).lengthSquared() < angularSleepingThreshold * angularSleepingThreshold)) {
+		if ((getLinearVelocity(Stack.allocVector3f()).lengthSquared() < linearSleepingThreshold * linearSleepingThreshold) &&
+				(getAngularVelocity(Stack.allocVector3f()).lengthSquared() < angularSleepingThreshold * angularSleepingThreshold)) {
 			deactivationTime += timeStep;
 		}
 		else {

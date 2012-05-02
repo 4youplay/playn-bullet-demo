@@ -215,7 +215,7 @@ public abstract class GImpactShapeInterface extends ConcaveShape {
 	 * Retrieves the bound from a child.
 	 */
 	public void getChildAabb(int child_index, Transform t, Vector3f aabbMin, Vector3f aabbMax) {
-		AABB child_aabb = Stack.alloc(AABB.class);
+		AABB child_aabb = Stack.allocAABB();
 		getPrimitiveManager().get_primitive_box(child_index, child_aabb);
 		child_aabb.appy_transform(t);
 		aabbMin.set(child_aabb.min);

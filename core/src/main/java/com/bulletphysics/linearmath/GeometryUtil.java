@@ -72,9 +72,9 @@ public class GeometryUtil {
 	}
 
 	public static void getPlaneEquationsFromVertices(ObjectArrayList<Vector3f> vertices, ObjectArrayList<Vector4f> planeEquationsOut) {
-		Vector4f planeEquation = Stack.alloc(Vector4f.class);
-		Vector3f edge0 = Stack.alloc(Vector3f.class), edge1 = Stack.alloc(Vector3f.class);
-		Vector3f tmp = Stack.alloc(Vector3f.class);
+		Vector4f planeEquation = Stack.allocVector4f();
+		Vector3f edge0 = Stack.allocVector3f(), edge1 = Stack.allocVector3f();
+		Vector3f tmp = Stack.allocVector3f();
 
 		int numvertices = vertices.size();
 		// brute force:
@@ -115,10 +115,10 @@ public class GeometryUtil {
 	}
 	
 	public static void getVerticesFromPlaneEquations(ObjectArrayList<Vector4f> planeEquations, ObjectArrayList<Vector3f> verticesOut) {
-		Vector3f n2n3 = Stack.alloc(Vector3f.class);
-		Vector3f n3n1 = Stack.alloc(Vector3f.class);
-		Vector3f n1n2 = Stack.alloc(Vector3f.class);
-		Vector3f potentialVertex = Stack.alloc(Vector3f.class);
+		Vector3f n2n3 = Stack.allocVector3f();
+		Vector3f n3n1 = Stack.allocVector3f();
+		Vector3f n1n2 = Stack.allocVector3f();
+		Vector3f potentialVertex = Stack.allocVector3f();
 
 		int numbrushes = planeEquations.size();
 		// brute force:

@@ -87,8 +87,8 @@ public class ConvexConcaveCollisionAlgorithm extends CollisionAlgorithm {
 
 				concaveShape.processAllTriangles(
 						btConvexTriangleCallback,
-						btConvexTriangleCallback.getAabbMin(Stack.alloc(Vector3f.class)),
-						btConvexTriangleCallback.getAabbMax(Stack.alloc(Vector3f.class)));
+						btConvexTriangleCallback.getAabbMin(Stack.allocVector3f()),
+						btConvexTriangleCallback.getAabbMax(Stack.allocVector3f()));
 
 				resultOut.refreshContactPoints();
 			}
@@ -97,7 +97,7 @@ public class ConvexConcaveCollisionAlgorithm extends CollisionAlgorithm {
 
 	@Override
 	public float calculateTimeOfImpact(CollisionObject body0, CollisionObject body1, DispatcherInfo dispatchInfo, ManifoldResult resultOut) {
-		Vector3f tmp = Stack.alloc(Vector3f.class);
+		Vector3f tmp = Stack.allocVector3f();
 
 		CollisionObject convexbody = isSwapped ? body1 : body0;
 		CollisionObject triBody = isSwapped ? body0 : body1;
@@ -106,25 +106,25 @@ public class ConvexConcaveCollisionAlgorithm extends CollisionAlgorithm {
 
 		// only perform CCD above a certain threshold, this prevents blocking on the long run
 		// because object in a blocked ccd state (hitfraction<1) get their linear velocity halved each frame...
-		tmp.sub(convexbody.getInterpolationWorldTransform(Stack.alloc(Transform.class)).origin, convexbody.getWorldTransform(Stack.alloc(Transform.class)).origin);
+		tmp.sub(convexbody.getInterpolationWorldTransform(Stack.allocTransform()).origin, convexbody.getWorldTransform(Stack.allocTransform()).origin);
 		float squareMot0 = tmp.lengthSquared();
 		if (squareMot0 < convexbody.getCcdSquareMotionThreshold()) {
 			return 1f;
 		}
 
-		Transform tmpTrans = Stack.alloc(Transform.class);
+		Transform tmpTrans = Stack.allocTransform();
 		
 		//const btVector3& from = convexbody->m_worldTransform.getOrigin();
 		//btVector3 to = convexbody->m_interpolationWorldTransform.getOrigin();
 		//todo: only do if the motion exceeds the 'radius'
 
-		Transform triInv = triBody.getWorldTransform(Stack.alloc(Transform.class));
+		Transform triInv = triBody.getWorldTransform(Stack.allocTransform());
 		triInv.inverse();
 
-		Transform convexFromLocal = Stack.alloc(Transform.class);
+		Transform convexFromLocal = Stack.allocTransform();
 		convexFromLocal.mul(triInv, convexbody.getWorldTransform(tmpTrans));
 
-		Transform convexToLocal = Stack.alloc(Transform.class);
+		Transform convexToLocal = Stack.allocTransform();
 		convexToLocal.mul(triInv, convexbody.getInterpolationWorldTransform(tmpTrans));
 
 		if (triBody.getCollisionShape().isConcave()) {

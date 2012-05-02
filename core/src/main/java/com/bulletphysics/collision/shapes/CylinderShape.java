@@ -95,13 +95,13 @@ public class CylinderShape extends BoxShape {
 
 	@Override
 	public Vector3f localGetSupportingVertexWithoutMargin(Vector3f vec, Vector3f out) {
-		return cylinderLocalSupportY(getHalfExtentsWithoutMargin(Stack.alloc(Vector3f.class)), vec, out);
+		return cylinderLocalSupportY(getHalfExtentsWithoutMargin(Stack.allocVector3f()), vec, out);
 	}
 
 	@Override
 	public void batchedUnitVectorGetSupportingVertexWithoutMargin(Vector3f[] vectors, Vector3f[] supportVerticesOut, int numVectors) {
 		for (int i = 0; i < numVectors; i++) {
-			cylinderLocalSupportY(getHalfExtentsWithoutMargin(Stack.alloc(Vector3f.class)), vectors[i], supportVerticesOut[i]);
+			cylinderLocalSupportY(getHalfExtentsWithoutMargin(Stack.allocVector3f()), vectors[i], supportVerticesOut[i]);
 		}
 	}
 
@@ -131,7 +131,7 @@ public class CylinderShape extends BoxShape {
 	}
 	
 	public float getRadius() {
-		return getHalfExtentsWithMargin(Stack.alloc(Vector3f.class)).x;
+		return getHalfExtentsWithMargin(Stack.allocVector3f()).x;
 	}
 
 	@Override
