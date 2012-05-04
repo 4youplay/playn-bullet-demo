@@ -265,6 +265,7 @@ public class BvhTriangleMeshShape extends TriangleMeshShape {
 		}
 
 		public void processNode(int nodeSubPart, int nodeTriangleIndex) {
+		    int sp = Stack.enter();
 			VertexData data = meshInterface.getLockedReadOnlyVertexIndexBase(nodeSubPart);
 
 			Vector3f meshScaling = meshInterface.getScaling(Stack.allocVector3f());
@@ -275,6 +276,7 @@ public class BvhTriangleMeshShape extends TriangleMeshShape {
 			callback.processTriangle(triangle, nodeSubPart, nodeTriangleIndex);
 			
 			meshInterface.unLockReadOnlyVertexBase(nodeSubPart);
+			Stack.leave(sp);
 		}
 	}
 	

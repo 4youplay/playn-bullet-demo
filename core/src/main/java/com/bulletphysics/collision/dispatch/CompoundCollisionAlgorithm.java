@@ -81,6 +81,7 @@ public class CompoundCollisionAlgorithm extends CollisionAlgorithm {
 	
 	@Override
 	public void processCollision(CollisionObject body0, CollisionObject body1, DispatcherInfo dispatchInfo, ManifoldResult resultOut) {
+	    int sp = Stack.enter();
 		CollisionObject colObj = isSwapped ? body1 : body0;
 		CollisionObject otherObj = isSwapped ? body0 : body1;
 
@@ -124,10 +125,12 @@ public class CompoundCollisionAlgorithm extends CollisionAlgorithm {
 			colObj.setWorldTransform(orgTrans);
 			colObj.setInterpolationWorldTransform(orgInterpolationTrans);
 		}
+		Stack.leave(sp);
 	}
 
 	@Override
 	public float calculateTimeOfImpact(CollisionObject body0, CollisionObject body1, DispatcherInfo dispatchInfo, ManifoldResult resultOut) {
+	    int sp = Stack.enter();
 		CollisionObject colObj = isSwapped ? body1 : body0;
 		CollisionObject otherObj = isSwapped ? body0 : body1;
 
@@ -172,6 +175,7 @@ public class CompoundCollisionAlgorithm extends CollisionAlgorithm {
 			colObj.internalSetTemporaryCollisionShape(tmpShape);
 			colObj.setWorldTransform(orgTrans);
 		}
+		Stack.leave(sp);
 		return hitFraction;
 	}
 

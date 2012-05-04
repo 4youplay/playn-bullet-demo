@@ -538,6 +538,7 @@ public class SliderConstraint extends TypedConstraint {
 	}
 	
 	public void solveConstraintInt(RigidBody rbA, RigidBody rbB) {
+	    int sp = Stack.enter();
 		Vector3f tmp = Stack.allocVector3f();
 
 		// linear
@@ -692,6 +693,7 @@ public class SliderConstraint extends TypedConstraint {
 				rbB.applyTorqueImpulse(tmp);
 			}
 		}
+		Stack.leave(sp);
 	}
 	
 	// shared code used by ODE solver

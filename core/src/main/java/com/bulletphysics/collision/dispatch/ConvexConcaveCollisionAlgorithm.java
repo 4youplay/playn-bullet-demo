@@ -97,6 +97,7 @@ public class ConvexConcaveCollisionAlgorithm extends CollisionAlgorithm {
 
 	@Override
 	public float calculateTimeOfImpact(CollisionObject body0, CollisionObject body1, DispatcherInfo dispatchInfo, ManifoldResult resultOut) {
+	    int sp = Stack.enter();
 		Vector3f tmp = Stack.allocVector3f();
 
 		CollisionObject convexbody = isSwapped ? body1 : body0;
@@ -109,6 +110,7 @@ public class ConvexConcaveCollisionAlgorithm extends CollisionAlgorithm {
 		tmp.sub(convexbody.getInterpolationWorldTransform(Stack.allocTransform()).origin, convexbody.getWorldTransform(Stack.allocTransform()).origin);
 		float squareMot0 = tmp.lengthSquared();
 		if (squareMot0 < convexbody.getCcdSquareMotionThreshold()) {
+		    Stack.leave(sp);
 			return 1f;
 		}
 
@@ -155,10 +157,12 @@ public class ConvexConcaveCollisionAlgorithm extends CollisionAlgorithm {
 
 			if (raycastCallback.hitFraction < convexbody.getHitFraction()) {
 				convexbody.setHitFraction(raycastCallback.hitFraction);
+				Stack.leave(sp);
 				return raycastCallback.hitFraction;
 			}
 		}
 
+		Stack.leave(sp);
 		return 1f;
 	}
 

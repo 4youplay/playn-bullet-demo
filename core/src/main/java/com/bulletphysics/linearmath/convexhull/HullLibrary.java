@@ -31,7 +31,11 @@ import com.bulletphysics.linearmath.MiscUtil;
 import com.bulletphysics.linearmath.VectorUtil;
 import com.bulletphysics.util.IntArrayList;
 import com.bulletphysics.util.ObjectArrayList;
+import com.bulletphysics.util.Suppliers;
+
 import cz.advel.stack.Stack;
+import cz.advel.stack.Supplier;
+
 import javax.vecmath.Vector3f;
 
 /**
@@ -43,6 +47,13 @@ import javax.vecmath.Vector3f;
  */
 public class HullLibrary {
 
+    final Supplier<Tri> NEW_TRI_SUPPLIER = new Supplier<Tri>() {
+      @Override
+      public Tri get() {
+        return new Tri(0, 0, 0);
+      }
+    };
+  
 	public final IntArrayList vertexIndexMapping = new IntArrayList();
 
 	private ObjectArrayList<Tri> tris = new ObjectArrayList<Tri>();
@@ -63,7 +74,7 @@ public class HullLibrary {
 		if (vcount < 8) vcount = 8;
 		
 		ObjectArrayList<Vector3f> vertexSource = new ObjectArrayList<Vector3f>();
-		MiscUtil.resize(vertexSource, vcount, Vector3f.class);
+		MiscUtil.resize(vertexSource, vcount, Suppliers.NEW_VECTOR3F_SUPPLIER);
 
 		Vector3f scale = Stack.allocVector3f();
 
@@ -85,7 +96,7 @@ public class HullLibrary {
 			if (ok) {
 				// re-index triangle mesh so it refers to only used vertices, rebuild a new vertex table.
 				ObjectArrayList<Vector3f> vertexScratch = new ObjectArrayList<Vector3f>();
-				MiscUtil.resize(vertexScratch, hr.vcount, Vector3f.class);
+				MiscUtil.resize(vertexScratch, hr.vcount, Suppliers.NEW_VECTOR3F_SUPPLIER);
 
 				bringOutYourDead(hr.vertices, hr.vcount, vertexScratch, ovcount, hr.indices, hr.indexCount);
 
@@ -94,7 +105,7 @@ public class HullLibrary {
 				if (desc.hasHullFlag(HullFlags.TRIANGLES)) { // if he wants the results as triangle!
 					result.polygons = false;
 					result.numOutputVertices = ovcount[0];
-					MiscUtil.resize(result.outputVertices, ovcount[0], Vector3f.class);
+					MiscUtil.resize(result.outputVertices, ovcount[0], Suppliers.NEW_VECTOR3F_SUPPLIER);
 					result.numFaces = hr.faceCount;
 					result.numIndices = hr.indexCount;
 
@@ -128,7 +139,7 @@ public class HullLibrary {
 				else {
 					result.polygons = true;
 					result.numOutputVertices = ovcount[0];
-					MiscUtil.resize(result.outputVertices, ovcount[0], Vector3f.class);
+					MiscUtil.resize(result.outputVertices, ovcount[0], Suppliers.NEW_VECTOR3F_SUPPLIER);
 					result.numFaces = hr.faceCount;
 					result.numIndices = hr.indexCount + hr.faceCount;
 					MiscUtil.resize(result.indices, result.numIndices, 0);
@@ -271,7 +282,7 @@ public class HullLibrary {
 		for (int i=0; i<ts.size(); i++) {
 			tris_out.set(i, ts.get(i));
 		}
-		MiscUtil.resize(tris, 0, Tri.class);
+		MiscUtil.resize(tris, 0, NEW_TRI_SUPPLIER);
 
 		return 1;
 	}

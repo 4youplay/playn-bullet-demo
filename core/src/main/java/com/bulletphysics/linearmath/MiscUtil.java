@@ -28,7 +28,7 @@ import com.bulletphysics.util.FloatArrayList;
 import com.bulletphysics.util.IntArrayList;
 import com.bulletphysics.util.ObjectArrayList;
 
-import cz.advel.stack.Reflection;
+import cz.advel.stack.Supplier;
 
 /**
  * Miscellaneous utility functions.
@@ -89,9 +89,9 @@ public class MiscUtil {
 	 * Resizes list to exact size, filling with new instances of given class type
 	 * when expanding.
 	 */
-	public static <T> void resize(ObjectArrayList<T> list, int size, Class<T> valueCls) {	
+	public static <T> void resize(ObjectArrayList<T> list, int size, Supplier<T> valueSupplier) {	
 		while (list.size() < size) {
-			list.add(valueCls != null? Reflection.newInstance(valueCls) : null);
+			list.add(valueSupplier != null? valueSupplier.get() : null);
 		}
 
 		while (list.size() > size) {

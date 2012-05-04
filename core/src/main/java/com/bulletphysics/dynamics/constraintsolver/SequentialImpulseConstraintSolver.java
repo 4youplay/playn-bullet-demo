@@ -815,6 +815,7 @@ public class SequentialImpulseConstraintSolver extends ConstraintSolver {
 	
 	public float solveGroupCacheFriendlyIterations(ObjectArrayList<CollisionObject> bodies, int numBodies, ObjectArrayList<PersistentManifold> manifoldPtr, int manifold_offset, int numManifolds, ObjectArrayList<TypedConstraint> constraints, int constraints_offset, int numConstraints, ContactSolverInfo infoGlobal, IDebugDraw debugDrawer/*,btStackAlloc* stackAlloc*/) {
 		BulletStats.pushProfile("solveGroupCacheFriendlyIterations");
+		int sp = Stack.enter();
 		try {
 			int numConstraintPool = tmpSolverConstraintPool.size();
 			int numFrictionPool = tmpSolverFrictionConstraintPool.size();
@@ -908,6 +909,7 @@ public class SequentialImpulseConstraintSolver extends ConstraintSolver {
 			return 0f;
 		}
 		finally {
+		    Stack.leave(sp);
 			BulletStats.popProfile();		
 		}
 	}

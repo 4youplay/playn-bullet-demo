@@ -34,6 +34,8 @@ import com.bulletphysics.linearmath.Transform;
 import com.bulletphysics.util.ArrayPool;
 import com.bulletphysics.util.FloatArrayList;
 import com.bulletphysics.util.ObjectArrayList;
+import com.bulletphysics.util.Suppliers;
+
 import cz.advel.stack.Stack;
 import javax.vecmath.Matrix3f;
 import javax.vecmath.Quat4f;
@@ -481,8 +483,8 @@ public class RaycastVehicle extends TypedConstraint {
 			return;
 		}
 
-		MiscUtil.resize(forwardWS, numWheel, Vector3f.class);
-		MiscUtil.resize(axle, numWheel, Vector3f.class);
+		MiscUtil.resize(forwardWS, numWheel, Suppliers.NEW_VECTOR3F_SUPPLIER);
+		MiscUtil.resize(axle, numWheel, Suppliers.NEW_VECTOR3F_SUPPLIER);
 		MiscUtil.resize(forwardImpulse, numWheel, 0f);
 		MiscUtil.resize(sideImpulse, numWheel, 0f);
 

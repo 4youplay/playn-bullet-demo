@@ -31,6 +31,8 @@ import com.bulletphysics.collision.narrowphase.PersistentManifold;
 import com.bulletphysics.linearmath.MiscUtil;
 import com.bulletphysics.util.ObjectArrayList;
 
+import cz.advel.stack.Stack;
+
 /**
  * SimulationIslandManager creates and handles simulation islands, using {@link UnionFind}.
  * 
@@ -244,6 +246,7 @@ public class SimulationIslandManager {
 		int numElem = getUnionFind().getNumElements();
 
 		BulletStats.pushProfile("processIslands");
+		int sp = Stack.enter();
 		try {
 			//#ifndef SPLIT_ISLANDS
 			//btPersistentManifold** manifold = dispatcher->getInternalManifoldPointer();
@@ -323,6 +326,7 @@ public class SimulationIslandManager {
 		}
 		finally {
 			BulletStats.popProfile();
+			Stack.leave(sp);
 		}
 	}
 

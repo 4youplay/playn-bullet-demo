@@ -26,7 +26,6 @@ package com.bulletphysics.util;
 import java.util.HashMap;
 import java.util.Map;
 
-import cz.advel.stack.Reflection;
 import cz.advel.stack.Supplier;
 
 /**

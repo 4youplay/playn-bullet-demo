@@ -332,14 +332,14 @@ public class IGLImpl implements IGL {
           int argb = argbArray[i];
           byteBuffer.put((byte) ((argb >> 16) & 255));
           byteBuffer.put((byte) ((argb >> 8) & 255));
-          byteBuffer.put((byte) ((argb) & 255));
+          byteBuffer.put((byte) ((argb >> 0) & 255));
           byteBuffer.put((byte) ((argb >> 24) & 255));
         }
         byteBuffer.position(0);
         gl.glBindTexture(GL11.GL_TEXTURE_2D, handle);
         gl.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_MIN_FILTER, GL11.GL_LINEAR);
         gl.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_MAG_FILTER, GL11.GL_LINEAR);
-        gl.glTexImage2D(GL11.GL_TEXTURE_2D, 0, 4, w, h, 0, GL11.GL_RGBA, GL11.GL_UNSIGNED_BYTE, byteBuffer);
+        gl.glTexImage2D(GL11.GL_TEXTURE_2D, 0, GL11.GL_RGBA, w, h, 0, GL11.GL_RGBA, GL11.GL_UNSIGNED_BYTE, byteBuffer);
       }
       gl.glBindTexture(GL11.GL_TEXTURE_2D, handle);
       gl.glEnable(GL11.GL_TEXTURE_2D);

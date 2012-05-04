@@ -297,6 +297,7 @@ public class DiscreteDynamicsWorld extends DynamicsWorld {
 		long t0 = Clock.nanoTime();
 		
 		BulletStats.pushProfile("stepSimulation");
+		int sp = Stack.enter();
 		try {
 			int numSimulationSubSteps = 0;
 
@@ -354,11 +355,13 @@ public class DiscreteDynamicsWorld extends DynamicsWorld {
 			BulletStats.popProfile();
 			
 			BulletStats.stepSimulationTime = (Clock.nanoTime() - t0) / 1000000;
+			Stack.leave(sp);
 		}
 	}
 
 	protected void internalSingleStepSimulation(float timeStep) {
 		BulletStats.pushProfile("internalSingleStepSimulation");
+		int sp = Stack.enter();
 		try {
 			// apply gravity, predict motion
 			predictUnconstraintMotion(timeStep);
@@ -398,6 +401,7 @@ public class DiscreteDynamicsWorld extends DynamicsWorld {
 		}
 		finally {
 			BulletStats.popProfile();
+			Stack.leave(sp);
 		}
 	}
 

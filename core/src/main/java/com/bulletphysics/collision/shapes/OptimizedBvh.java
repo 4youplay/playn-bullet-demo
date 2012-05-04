@@ -28,6 +28,8 @@ import com.bulletphysics.linearmath.MiscUtil;
 import com.bulletphysics.linearmath.VectorUtil;
 import com.bulletphysics.util.ObjectArrayList;
 import cz.advel.stack.Stack;
+import cz.advel.stack.Supplier;
+
 import java.io.Serializable;
 import javax.vecmath.Vector3f;
 
@@ -39,7 +41,14 @@ import javax.vecmath.Vector3f;
  * @author jezek2
  */
 public class OptimizedBvh implements Serializable {
-
+    private final static Supplier<OptimizedBvhNode> NEW_OPTIMIZED_BVH_NODE_SUPPLIER = new Supplier<OptimizedBvhNode>() {
+      @Override
+      public OptimizedBvhNode get() {
+       return new OptimizedBvhNode();
+      }
+      
+    };
+  
 	private static final long serialVersionUID = 1L;
 
 	//protected final BulletStack stack = BulletStack.get();
@@ -310,7 +319,7 @@ public class OptimizedBvh implements Serializable {
 
 			// TODO: check
 			//contiguousNodes.resize(2*numLeafNodes);
-			MiscUtil.resize(contiguousNodes, 2 * numLeafNodes, OptimizedBvhNode.class);
+			MiscUtil.resize(contiguousNodes, 2 * numLeafNodes, NEW_OPTIMIZED_BVH_NODE_SUPPLIER);
 		}
 
 		curNodeIndex = 0;

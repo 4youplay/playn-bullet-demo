@@ -39,6 +39,8 @@ import com.bulletphysics.linearmath.DefaultMotionState;
 import com.bulletphysics.linearmath.Transform;
 import com.googlecode.playnbulletdemo.core.gl.GL11;
 
+import cz.advel.stack.Stack;
+
 import javax.vecmath.Vector3f;
 
 import playn.core.PlayN;
@@ -82,6 +84,10 @@ public class BasicDemo extends DemoApplication {
 		// simple dynamics world doesn't handle fixed-time-stepping
 		float ms = getDeltaTimeMicroseconds();
 
+		 
+		Stack.libraryCleanCurrentThread();
+		int cnt0 = Stack.typePos;
+		
 		// step the simulation
 		if (dynamicsWorld != null) {
 			dynamicsWorld.stepSimulation(ms / 1000000f);
@@ -89,6 +95,7 @@ public class BasicDemo extends DemoApplication {
 			dynamicsWorld.debugDrawWorld();
 		}
 
+		
 		renderme();
 
 		//glFlush();

@@ -25,6 +25,9 @@ package com.bulletphysics.collision.dispatch;
 
 import com.bulletphysics.linearmath.MiscUtil;
 import com.bulletphysics.util.ObjectArrayList;
+
+import cz.advel.stack.Supplier;
+
 import java.util.Comparator;
 
 /**
@@ -34,7 +37,14 @@ import java.util.Comparator;
  * @author jezek2
  */
 public class UnionFind {
-	
+    private final static Supplier<Element> NEW_ELEMENT_SUPPLIER = new Supplier<Element>() {
+      @Override
+      public Element get() {
+        return new Element();
+      }
+      
+    };
+  
 	// Optimization: could use short ints instead of ints (halving memory, would limit the number of rigid bodies to 64k, sounds reasonable).
 
 	private final ObjectArrayList<Element> elements = new ObjectArrayList<Element>();
@@ -83,7 +93,7 @@ public class UnionFind {
 	}
 
 	public void allocate(int N) {
-		MiscUtil.resize(elements, N, Element.class);
+		MiscUtil.resize(elements, N, NEW_ELEMENT_SUPPLIER);
 	}
 
 	public void free() {

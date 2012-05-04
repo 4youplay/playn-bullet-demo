@@ -45,7 +45,7 @@ public final class ObjectArrayList<T> extends AbstractList<T> implements RandomA
 	
 	@SuppressWarnings("unchecked")
 	public ObjectArrayList(int initialCapacity) {
-		array = (T[])new Object[initialCapacity];
+		array = (T[]) new Object[initialCapacity];
 	}
 	
 	@Override

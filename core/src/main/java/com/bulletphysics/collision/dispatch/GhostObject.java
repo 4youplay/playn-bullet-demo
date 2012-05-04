@@ -79,7 +79,8 @@ public class GhostObject extends CollisionObject {
 	}
 
 	public void convexSweepTest(ConvexShape castShape, Transform convexFromWorld, Transform convexToWorld, CollisionWorld.ConvexResultCallback resultCallback, float allowedCcdPenetration) {
-		Transform convexFromTrans = Stack.allocTransform();
+		int sp = Stack.enter();
+	    Transform convexFromTrans = Stack.allocTransform();
 		Transform convexToTrans = Stack.allocTransform();
 
 		convexFromTrans.set(convexFromWorld);
@@ -125,9 +126,11 @@ public class GhostObject extends CollisionObject {
 				}
 			}
 		}
+		Stack.leave(sp);
 	}
 
 	public void rayTest(Vector3f rayFromWorld, Vector3f rayToWorld, CollisionWorld.RayResultCallback resultCallback) {
+	    int sp = Stack.enter();
 		Transform rayFromTrans = Stack.allocTransform();
 		rayFromTrans.setIdentity();
 		rayFromTrans.origin.set(rayFromWorld);
@@ -149,6 +152,7 @@ public class GhostObject extends CollisionObject {
 				                             resultCallback);
 			}
 		}
+		Stack.leave(sp);
 	}
 
 	public int getNumOverlappingObjects() {

@@ -32,6 +32,8 @@ import com.bulletphysics.linearmath.MiscUtil;
 import com.bulletphysics.linearmath.VectorUtil;
 import com.bulletphysics.util.ObjectArrayList;
 import cz.advel.stack.Stack;
+import cz.advel.stack.Supplier;
+
 import javax.vecmath.Vector3f;
 
 /**
@@ -42,6 +44,14 @@ import javax.vecmath.Vector3f;
  */
 public abstract class AxisSweep3Internal extends BroadphaseInterface {
 
+    static final Supplier<BroadphasePair> NEW_BROADPHASE_PAIR_SUPPLIER = new Supplier<BroadphasePair>() {
+      @Override
+      public BroadphasePair get() {
+        return new BroadphasePair();
+      }
+      
+    };
+  
 	protected int bpHandleMask;
 	protected int handleSentinel;
 	
@@ -70,7 +80,8 @@ public abstract class AxisSweep3Internal extends BroadphaseInterface {
 	protected int mask;
 	
 	AxisSweep3Internal(Vector3f worldAabbMin, Vector3f worldAabbMax, int handleMask, int handleSentinel, int userMaxHandles/* = 16384*/, OverlappingPairCache pairCache/*=0*/) {
-		this.bpHandleMask = handleMask;
+		int sp = Stack.enter();
+	    this.bpHandleMask = handleMask;
 		this.handleSentinel = handleSentinel;
 		this.pairCache = pairCache;
 
@@ -138,6 +149,7 @@ public abstract class AxisSweep3Internal extends BroadphaseInterface {
 		
 		// JAVA NOTE: added
 		mask = getMask();
+		Stack.leave(sp);
 	}
 
 	// allocation/deallocation
@@ -192,6 +204,7 @@ public abstract class AxisSweep3Internal extends BroadphaseInterface {
 	//#endif //DEBUG_BROADPHASE
 
 	protected void quantize(int[] out, Vector3f point, int isMax) {
+	    int sp = Stack.enter();
 		Vector3f clampedPoint = Stack.alloc(point);
 
 		VectorUtil.setMax(clampedPoint, worldAabbMin);
@@ -204,6 +217,7 @@ public abstract class AxisSweep3Internal extends BroadphaseInterface {
 		out[0] = (((int)v.x & bpHandleMask) | isMax) & mask;
 		out[1] = (((int)v.y & bpHandleMask) | isMax) & mask;
 		out[2] = (((int)v.z & bpHandleMask) | isMax) & mask;
+		Stack.leave(sp);
 	}
 
 	// sorting a min edge downwards can only ever *add* overlaps
@@ -379,7 +393,7 @@ public abstract class AxisSweep3Internal extends BroadphaseInterface {
 			// perform a sort, to find duplicates and to sort 'invalid' pairs to the end
 			MiscUtil.quickSort(overlappingPairArray, BroadphasePair.broadphasePairSortPredicate);
 
-			MiscUtil.resize(overlappingPairArray, overlappingPairArray.size() - invalidPair, BroadphasePair.class);
+			MiscUtil.resize(overlappingPairArray, overlappingPairArray.size() - invalidPair, NEW_BROADPHASE_PAIR_SUPPLIER);
 			invalidPair = 0;
 
 			int i;
@@ -435,7 +449,7 @@ public abstract class AxisSweep3Internal extends BroadphaseInterface {
 			// perform a sort, to sort 'invalid' pairs to the end
 			MiscUtil.quickSort(overlappingPairArray, BroadphasePair.broadphasePairSortPredicate);
 
-			MiscUtil.resize(overlappingPairArray, overlappingPairArray.size() - invalidPair, BroadphasePair.class);
+			MiscUtil.resize(overlappingPairArray, overlappingPairArray.size() - invalidPair, NEW_BROADPHASE_PAIR_SUPPLIER);
 			invalidPair = 0;
 			//#endif//CLEAN_INVALID_PAIRS
 
