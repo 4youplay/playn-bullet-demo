@@ -4,11 +4,12 @@ import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.nio.FloatBuffer;
 
-import playn.core.PlayN;
-
-
-
 public class Tesselator {
+  
+  public static final int OPTION_COLOR = 1;
+  public static final int OPTION_NORMALS = 2;
+  public static final int OPTION_TEXTURE = 4;
+  
   private static final int FLOAT_SIZE = 4;
   private static final int FLOATS_PER_EDGE = 12;
   private static final int BYTE_STRIDE = FLOATS_PER_EDGE * FLOAT_SIZE;
@@ -23,10 +24,10 @@ public class Tesselator {
   private int pos;
 
   
-  private float colorR;
-  private float colorG;
-  private float colorB;
-  private float colorA;
+  private float colorR = .5f;
+  private float colorG = .5f;
+  private float colorB = .5f;
+  private float colorA = .5f;
   private float normalX;
   private float normalY;
   private float normalZ;
@@ -34,18 +35,26 @@ public class Tesselator {
   private float texCoordT;
   
   
-  private boolean hasColor = false;
-  private boolean hasNormal = false;
-  private boolean hasTexCoords = false;
+  private boolean hasColor;
+  private boolean hasNormal;
+  private boolean hasTexCoords;
+  private int options;
 
   public Tesselator(int maxEdges) {
+    this(maxEdges, OPTION_COLOR | OPTION_NORMALS | OPTION_TEXTURE);
+  }
+  
+  public Tesselator(int maxEdges, int options) {
     byteBuffer = ByteBuffer.allocateDirect(maxEdges * BYTE_STRIDE);
     byteBuffer.order(ByteOrder.nativeOrder());
     floatBuffer = byteBuffer.asFloatBuffer();
+    this.options = options;
+    hasColor = (options & OPTION_COLOR) != 0;
+    hasNormal = (options & OPTION_NORMALS) != 0;
+    hasTexCoords = (options & OPTION_TEXTURE) != 0;
   }
   
   public void color3f(float r, float g, float b) {
-    hasColor = true;
     colorR = r;
     colorG = g;
     colorB = b;
@@ -53,13 +62,11 @@ public class Tesselator {
   }
   
   public void texCoord2f(float s, float t) {
-    hasTexCoords = true;
     texCoordS = s;
     texCoordT = t;
   }
   
   public void normal3f(float x, float y, float z) {
-    hasNormal = true;
     normalX = x;
     normalY = y;
     normalZ = z;
@@ -67,18 +74,22 @@ public class Tesselator {
 
   public void begin(int mode) {
     this.mode = mode;
-    hasColor = false;
-    hasNormal = false;
     pos = 0;
   }
   
-  public void draw(GL11 gl) {
+//  public void setMode(int mode) {
+//    this.mode = mode;
+//  }
+  
+  public void draw(GL11 gl, int options) {
+    options &= this.options;
+    
     gl.glEnableClientState(GL11.GL_VERTEX_ARRAY);
     byteBuffer.position(0);
     byteBuffer.limit(pos * FLOAT_SIZE);
     gl.glVertexPointer(3, GL11.GL_FLOAT, BYTE_STRIDE, byteBuffer);
 
-    if (hasColor) {
+    if ((options & OPTION_COLOR) != 0) {
       gl.glEnableClientState(GL11.GL_COLOR_ARRAY);
       byteBuffer.position(COLOR_OFFSET * FLOAT_SIZE);
       gl.glColorPointer(4, GL11.GL_FLOAT, BYTE_STRIDE, byteBuffer);
@@ -94,7 +105,7 @@ public class Tesselator {
 //      gl.glDisableClientState(GL11.GL_NORMAL_ARRAY);
 //    }
 
-    if (hasTexCoords) {
+    if ((options & OPTION_TEXTURE) != 0) {
       gl.glEnableClientState(GL11.GL_TEXTURE_COORD_ARRAY);
       byteBuffer.position(TEX_COORD_OFFSET * FLOAT_SIZE);
       gl.glTexCoordPointer(2, GL11.GL_FLOAT, BYTE_STRIDE, byteBuffer);
@@ -104,10 +115,10 @@ public class Tesselator {
     
     gl.glDrawArrays(mode, 0, pos / FLOATS_PER_EDGE);
     
-    if (hasColor) {
+    if ((options & OPTION_COLOR) != 0) {
       gl.glDisableClientState(GL11.GL_COLOR_ARRAY);
     }
-    if (hasTexCoords) {
+    if ((options & OPTION_TEXTURE) != 0) {
       gl.glDisableClientState(GL11.GL_TEXTURE_COORD_ARRAY);
     }
   }

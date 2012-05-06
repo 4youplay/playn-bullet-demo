@@ -3,15 +3,12 @@ package com.googlecode.playnbulletdemo.core;
 import static playn.core.PlayN.assets;
 import static playn.core.PlayN.pointer;
 
-import com.googlecode.playnbulletdemo.core.bullet.BasicDemo;
-import com.googlecode.playnbulletdemo.core.bullet.DemoApplication;
-import com.googlecode.playnbulletdemo.core.bullet.ForkLiftDemo;
-import com.googlecode.playnbulletdemo.core.bullet.GLDebugDrawer;
-import com.googlecode.playnbulletdemo.core.bullet.IGL;
+import com.bulletphysics.demos.opengl.DemoRunner;
+import com.bulletphysics.demos.opengl.IGL;
 
 import playn.core.Game;
 import playn.core.Graphics;
-import playn.core.Keyboard;
+import playn.core.Key;
 import playn.core.Mouse;
 import playn.core.Mouse.ButtonEvent;
 import playn.core.Mouse.MotionEvent;
@@ -20,30 +17,46 @@ import playn.core.PlayN;
 import playn.core.Pointer;
 import playn.core.Pointer.Event;
 
+import static com.bulletphysics.demos.opengl.Keyboard.*;
+
 public class BulletDemo implements Game {
 
-  DemoApplication demoApp;
+  DemoRunner demoRunner;
   int mouseX;
   int mouseY;
   
+  private static int translateKeyCode(Key key) {
+    switch(key) {
+    case DOWN: return KEY_DOWN;
+    case END: return KEY_END;
+    case F1: return KEY_F1;
+    case F2: return KEY_F2;
+    case F3: return KEY_F3;
+    case F4: return KEY_F4;
+    case F5: return KEY_F5;
+    case F6: return KEY_F6;
+    case F7: return KEY_F7;
+    case F8: return KEY_F8;
+    case HOME: return KEY_HOME;
+    case LEFT: return KEY_LEFT;
+    case RIGHT: return KEY_RIGHT;
+    case UP: return KEY_UP;
+    case PAGE_DOWN: return KEY_DOWN;
+    case PAGE_UP: return KEY_UP;
+    default: return 0;
+    }
+  }
+
   @Override
   public void init() {
     Graphics graphics = PlayN.graphics();
     graphics.setSize(800, 600);
     
-    IGL gl = new IGLImpl(graphics.gl20());
-    demoApp = new BasicDemo(gl);
+    IGL gl = new PlayNIGL(graphics.gl20());
+    demoRunner = new DemoRunner(gl);
     
-    try {
-      demoApp.initPhysics();
-    } catch(Exception e) {
-      PlayN.log().error("physics initialization error", e);
-    }
-    demoApp.getDynamicsWorld().setDebugDrawer(
-        new GLDebugDrawer(gl));
-    
-    demoApp.reshape(graphics.width(), graphics.height());
-    demoApp.myinit();
+    demoRunner.reshape(graphics.width(), graphics.height());
+    demoRunner.myinit();
     
  // add a listener for pointer (mouse, touch) input
 //    PlayN.pointer().setListener(new Pointer.Listener() {
@@ -70,19 +83,19 @@ public class BulletDemo implements Game {
     PlayN.mouse().setListener(new Mouse.Listener() {
       @Override
       public void onMouseDown(ButtonEvent event) {
-        demoApp.mouseFunc(event.button(), 0, (int) event.x(), (int) event.y()); 
+        demoRunner.mouseFunc(event.button(), 0, (int) event.x(), (int) event.y()); 
       }
 
       @Override
       public void onMouseUp(ButtonEvent event) {
-        demoApp.mouseFunc(event.button(), 1, (int) event.x(), (int) event.y()); 
+        demoRunner.mouseFunc(event.button(), 1, (int) event.x(), (int) event.y()); 
       }
 
       @Override
       public void onMouseMove(MotionEvent event) {
         mouseX = (int) event.x();
         mouseY = (int) event.y();
-        demoApp.mouseMotionFunc(mouseX, mouseY); 
+        demoRunner.mouseMotionFunc(mouseX, mouseY); 
       }
 
       @Override
@@ -92,21 +105,24 @@ public class BulletDemo implements Game {
       
     });
     
-    PlayN.keyboard().setListener(new Keyboard.Listener() {
+    PlayN.keyboard().setListener(new playn.core.Keyboard.Listener() {
 
+
+      
       @Override
       public void onKeyDown(playn.core.Keyboard.Event event) {
-        demoApp.specialKeyboard(event.key(), mouseX, mouseY, 0);
+        demoRunner.specialKeyboard(translateKeyCode(event.key()), mouseX, mouseY, 0);
       }
 
+
       @Override
-      public void onKeyTyped(Keyboard.TypedEvent event) {
-        demoApp.keyboardCallback(event.typedChar(), mouseX, mouseY, 0);
+      public void onKeyTyped(playn.core.Keyboard.TypedEvent event) {
+        demoRunner.keyboardCallback(event.typedChar(), mouseX, mouseY, 0);
       }
 
       @Override
       public void onKeyUp(playn.core.Keyboard.Event event) {
-        demoApp.specialKeyboardUp(event.key(), mouseX, mouseY, 0);
+        demoRunner.specialKeyboardUp(translateKeyCode(event.key()), mouseX, mouseY, 0);
       }});
   }
 
@@ -121,7 +137,7 @@ public class BulletDemo implements Game {
 //    PlayN.graphics().gl20().glClear()
     
 //    demoApp.myinit();
-    demoApp.moveAndDisplay();
+    demoRunner.moveAndDisplay();
     
   }
 
