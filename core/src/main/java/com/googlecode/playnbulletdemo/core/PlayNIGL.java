@@ -19,20 +19,21 @@ import com.googlecode.playnbulletdemo.core.gl.Tesselator;
 public class PlayNIGL implements com.bulletphysics.demos.opengl.IGL {
 
   GL11FixedFunctionEmulation gl;
-  Tesselator tesselator = new Tesselator(1000);
+  Tesselator tesselator = new Tesselator(1000, Tesselator.OPTION_COLOR);
+  Tesselator textTesselator = new Tesselator(1000, Tesselator.OPTION_TEXTURE);
   boolean tesselating;
   TextureImage fontTexture;
   int options;
   int defaultOptions;
   
-  Tesselator texturedCube = Cube.buildTexturedCube();
+  Cube cube = new Cube();
   Cylinder cylinder = new Cylinder(1, 1, 1, 15);
   HashMap<String,TextureImage> textures = new HashMap<String,TextureImage>();
 
   public PlayNIGL(GL20 gl20) {
     gl = new GL11FixedFunctionEmulation(gl20);
 
-    ByteBuffer byteBuffer = ByteBuffer.allocateDirect(16);
+    ByteBuffer byteBuffer = ByteBuffer.allocateDirect(20);
     byteBuffer.order(ByteOrder.nativeOrder());
     IntBuffer intBuffer = byteBuffer.asIntBuffer();
     gl.glGenTextures(intBuffer.capacity(), intBuffer);
@@ -44,6 +45,8 @@ public class PlayNIGL implements com.bulletphysics.demos.opengl.IGL {
         "images/BulletCube.png"), intBuffer.get(2)));
     textures.put("Grid", new TextureImage(PlayN.assets().getImage(
         "images/grid1a.png"), intBuffer.get(3)));
+    textures.put("Warning", new TextureImage(PlayN.assets().getImage(
+        "images/warning.png"), intBuffer.get(4)));
   }
 
   @Override
@@ -151,7 +154,7 @@ public class PlayNIGL implements com.bulletphysics.demos.opengl.IGL {
     extent = extent * 0.5f;
     glPushMatrix();
     glScalef(extent, extent, extent);
-    texturedCube.draw(gl, options);
+    cube.draw(gl, options);
     glPopMatrix();
   }
 
@@ -201,8 +204,8 @@ public class PlayNIGL implements com.bulletphysics.demos.opengl.IGL {
 
     gl.glColor4f(red, green, blue, 1);
     // glColor4f(1, 1, 1, 1);
-    tesselator.begin(GL_QUADS);
-    // tesselator.color3f(1, 0, 0);
+    textTesselator.begin(GL_QUADS);
+    // textTesselator.color3f(1, 0, 0);
     for (int i = 0, n = text.length(); i < n; i++) {
       char c = text.charAt(i);
       if (c < 32 || c >= 128)
@@ -213,19 +216,19 @@ public class PlayNIGL implements com.bulletphysics.demos.opengl.IGL {
       // System.out.println("s: " + s + "t: " + t);
 
       int x0 = i * 6;
-      tesselator.texCoord2f(s, t);
-      tesselator.vertex3f(x0, 0, 1);
+      textTesselator.texCoord2f(s, t);
+      textTesselator.vertex3f(x0, 0, 1);
 
-      tesselator.texCoord2f(s + 1.f / 16, t);
-      tesselator.vertex3f(x0 + 8, 0, 1);
+      textTesselator.texCoord2f(s + 1.f / 16, t);
+      textTesselator.vertex3f(x0 + 8, 0, 1);
 
-      tesselator.texCoord2f(s + 1.f / 16, t + 1.f / 8);
-      tesselator.vertex3f(x0 + 8, 16, 1);
+      textTesselator.texCoord2f(s + 1.f / 16, t + 1.f / 8);
+      textTesselator.vertex3f(x0 + 8, 16, 1);
 
-      tesselator.texCoord2f(s, t + 1.f / 8);
-      tesselator.vertex3f(x0, 16, 1);
+      textTesselator.texCoord2f(s, t + 1.f / 8);
+      textTesselator.vertex3f(x0, 16, 1);
     }
-    tesselator.draw(gl, Tesselator.OPTION_TEXTURE);
+    textTesselator.draw(gl, Tesselator.OPTION_TEXTURE);
     gl.glDisable(GL11.GL_TEXTURE_2D);
     gl.glPopMatrix();
 

@@ -117,7 +117,9 @@ public class BulletDemo implements Game {
 
       @Override
       public void onKeyTyped(playn.core.Keyboard.TypedEvent event) {
+       
         demoRunner.keyboardCallback(event.typedChar(), mouseX, mouseY, 0);
+        
       }
 
       @Override
@@ -137,8 +139,17 @@ public class BulletDemo implements Game {
 //    PlayN.graphics().gl20().glClear()
     
 //    demoApp.myinit();
+    try {
     demoRunner.moveAndDisplay();
-    
+    } catch(Throwable e) {
+    	  while (e != null) {
+    	    PlayN.log().error("" + e);
+      for (StackTraceElement el: e.getStackTrace()) {
+        PlayN.log().error(" - " +el.getFileName() +":" + el.getLineNumber() + ": " + el.getClassName() + "." + el.getMethodName());
+      }
+      e = e.getCause();
+    	  }
+    }
   }
 
   @Override

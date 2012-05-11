@@ -1294,7 +1294,7 @@ public final class GL11FixedFunctionEmulation implements GL11 {
 
   @Override
   public void glGenBuffers(int n, IntBuffer buffers) {
-    throw new RuntimeException("GL11Emulation NYI");
+    gl.glGenBuffers(n, buffers);
   }
 
   @Override

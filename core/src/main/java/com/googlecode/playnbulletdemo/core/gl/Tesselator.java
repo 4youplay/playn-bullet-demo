@@ -3,6 +3,7 @@ package com.googlecode.playnbulletdemo.core.gl;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.nio.FloatBuffer;
+import java.nio.IntBuffer;
 
 public class Tesselator {
   
@@ -22,6 +23,8 @@ public class Tesselator {
   private FloatBuffer floatBuffer;
   private int mode;
   private int pos;
+  
+  boolean vbo;
 
   
   private float colorR = .5f;
@@ -34,12 +37,12 @@ public class Tesselator {
   private float texCoordS;
   private float texCoordT;
   
-  
   private boolean hasColor;
   private boolean hasNormal;
   private boolean hasTexCoords;
   private int options;
-
+  private int vboId;
+  
   public Tesselator(int maxEdges) {
     this(maxEdges, OPTION_COLOR | OPTION_NORMALS | OPTION_TEXTURE);
   }
@@ -52,6 +55,19 @@ public class Tesselator {
     hasColor = (options & OPTION_COLOR) != 0;
     hasNormal = (options & OPTION_NORMALS) != 0;
     hasTexCoords = (options & OPTION_TEXTURE) != 0;
+  }
+  
+  public void convertToVbo(GL11 gl) {
+    vbo = true;
+    ByteBuffer bb = ByteBuffer.allocateDirect(4);
+    bb.order(ByteOrder.nativeOrder());
+    IntBuffer ib = bb.asIntBuffer();
+    gl.glGenBuffers(1, ib);
+    vboId = ib.get(0);
+    gl.glBindBuffer(GL11.GL_ARRAY_BUFFER, vboId);
+    byteBuffer.position(0);
+    gl.glBufferData(GL11.GL_ARRAY_BUFFER, pos * FLOAT_SIZE, byteBuffer, GL11.GL_STATIC_DRAW);
+    gl.glBindBuffer(GL11.GL_ARRAY_BUFFER, 0);
   }
   
   public void color3f(float r, float g, float b) {
@@ -85,14 +101,23 @@ public class Tesselator {
     options &= this.options;
     
     gl.glEnableClientState(GL11.GL_VERTEX_ARRAY);
-    byteBuffer.position(0);
-    byteBuffer.limit(pos * FLOAT_SIZE);
-    gl.glVertexPointer(3, GL11.GL_FLOAT, BYTE_STRIDE, byteBuffer);
+    if (vbo) {
+      gl.glBindBuffer(GL11.GL_ARRAY_BUFFER, vboId);
+      gl.glVertexPointer(3, GL11.GL_FLOAT, BYTE_STRIDE, 0);
+    } else {
+      byteBuffer.position(0);
+      byteBuffer.limit(pos * FLOAT_SIZE);
+      gl.glVertexPointer(3, GL11.GL_FLOAT, BYTE_STRIDE, byteBuffer);
+    }    
 
     if ((options & OPTION_COLOR) != 0) {
       gl.glEnableClientState(GL11.GL_COLOR_ARRAY);
-      byteBuffer.position(COLOR_OFFSET * FLOAT_SIZE);
-      gl.glColorPointer(4, GL11.GL_FLOAT, BYTE_STRIDE, byteBuffer);
+      if (vbo) {
+        gl.glVertexPointer(4, GL11.GL_FLOAT, BYTE_STRIDE, COLOR_OFFSET * FLOAT_SIZE);
+      } else {
+        byteBuffer.position(COLOR_OFFSET * FLOAT_SIZE);
+        gl.glColorPointer(4, GL11.GL_FLOAT, BYTE_STRIDE, byteBuffer);
+      }
     } else {
       gl.glDisableClientState(GL11.GL_COLOR_ARRAY);
     }
@@ -107,8 +132,12 @@ public class Tesselator {
 
     if ((options & OPTION_TEXTURE) != 0) {
       gl.glEnableClientState(GL11.GL_TEXTURE_COORD_ARRAY);
-      byteBuffer.position(TEX_COORD_OFFSET * FLOAT_SIZE);
-      gl.glTexCoordPointer(2, GL11.GL_FLOAT, BYTE_STRIDE, byteBuffer);
+      if (vbo) {
+        gl.glTexCoordPointer(2, GL11.GL_FLOAT, BYTE_STRIDE, TEX_COORD_OFFSET * FLOAT_SIZE);
+      } else {
+        byteBuffer.position(TEX_COORD_OFFSET * FLOAT_SIZE);
+        gl.glTexCoordPointer(2, GL11.GL_FLOAT, BYTE_STRIDE, byteBuffer);
+      }
     } else {
       gl.glDisableClientState(GL11.GL_TEXTURE_COORD_ARRAY);
     }
@@ -120,6 +149,9 @@ public class Tesselator {
     }
     if ((options & OPTION_TEXTURE) != 0) {
       gl.glDisableClientState(GL11.GL_TEXTURE_COORD_ARRAY);
+    }
+    if (vbo) {
+      gl.glBindBuffer(GL11.GL_ARRAY_BUFFER, 0);
     }
   }
 
