@@ -1,4 +1,4 @@
-package com.googlecode.playnbulletdemo.core.gl;
+package com.googlecode.playnbulletdemo.core.gl11;
 
 /**
  * GL11 debugging helper functions.

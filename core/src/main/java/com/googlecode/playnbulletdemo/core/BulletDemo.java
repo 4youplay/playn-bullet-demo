@@ -5,6 +5,7 @@ import static playn.core.PlayN.pointer;
 
 import com.bulletphysics.demos.opengl.DemoRunner;
 import com.bulletphysics.demos.opengl.IGL;
+import com.bulletphysics.demos.opengl.Keyboard;
 
 import playn.core.Game;
 import playn.core.Graphics;
@@ -106,24 +107,26 @@ public class BulletDemo implements Game {
     });
     
     PlayN.keyboard().setListener(new playn.core.Keyboard.Listener() {
-
-
+      int mask = 0;
       
       @Override
       public void onKeyDown(playn.core.Keyboard.Event event) {
-        demoRunner.specialKeyboard(translateKeyCode(event.key()), mouseX, mouseY, 0);
+        if (event.key() == Key.SHIFT) {
+          mask |= Keyboard.SHIFT_DOWN_MASK;
+        }
+        demoRunner.specialKeyboard(translateKeyCode(event.key()), mouseX, mouseY, mask);
       }
-
 
       @Override
       public void onKeyTyped(playn.core.Keyboard.TypedEvent event) {
-       
-        demoRunner.keyboardCallback(event.typedChar(), mouseX, mouseY, 0);
-        
+        demoRunner.keyboardCallback(event.typedChar(), mouseX, mouseY, mask);
       }
 
       @Override
       public void onKeyUp(playn.core.Keyboard.Event event) {
+        if (event.key() == Key.SHIFT) {
+          mask &= ~Keyboard.SHIFT_DOWN_MASK;
+        }
         demoRunner.specialKeyboardUp(translateKeyCode(event.key()), mouseX, mouseY, 0);
       }});
   }

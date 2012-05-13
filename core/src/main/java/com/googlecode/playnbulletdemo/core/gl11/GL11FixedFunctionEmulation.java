@@ -1,4 +1,4 @@
-package com.googlecode.playnbulletdemo.core.gl;
+package com.googlecode.playnbulletdemo.core.gl11;
 
 import java.nio.Buffer;
 import java.nio.FloatBuffer;
@@ -7,6 +7,8 @@ import java.nio.ShortBuffer;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
+
+import com.googlecode.playnbulletdemo.core.gl.Matrix;
 
 
 import playn.core.PlayN;

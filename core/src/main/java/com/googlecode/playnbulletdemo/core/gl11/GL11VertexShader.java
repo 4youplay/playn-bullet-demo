@@ -26,7 +26,7 @@
 //            http://www.opengles-book.com
 //            http://www.opengles-book.com/downloads.html
 
-package com.googlecode.playnbulletdemo.core.gl;
+package com.googlecode.playnbulletdemo.core.gl11;
 
 public final class GL11VertexShader {
 

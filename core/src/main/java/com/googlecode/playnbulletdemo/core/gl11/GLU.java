@@ -1,7 +1,6 @@
-package com.googlecode.playnbulletdemo.core.gl;
+package com.googlecode.playnbulletdemo.core.gl11;
 
-import playn.core.PlayN;
-
+import com.googlecode.playnbulletdemo.core.gl.Matrix;
 
 /**
  * A set of GL utilities inspired by the OpenGL Utility Toolkit.

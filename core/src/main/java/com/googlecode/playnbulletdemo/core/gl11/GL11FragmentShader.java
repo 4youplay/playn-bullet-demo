@@ -1,4 +1,4 @@
-package com.googlecode.playnbulletdemo.core.gl;
+package com.googlecode.playnbulletdemo.core.gl11;
 
 public class GL11FragmentShader {
   static final String FRAGMENT_SHADER_SOURCE = 

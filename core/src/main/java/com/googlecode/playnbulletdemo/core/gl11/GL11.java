@@ -14,7 +14,7 @@
  * limitations under the License.
  ******************************************************************************/
 
-package com.googlecode.playnbulletdemo.core.gl;
+package com.googlecode.playnbulletdemo.core.gl11;
 
 import java.nio.Buffer;
 import java.nio.FloatBuffer;
