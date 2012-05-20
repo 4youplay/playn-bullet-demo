@@ -14,14 +14,16 @@
  * limitations under the License.
 -->
 <module rename-to='bulletdemo'>
+  <inherits name='playn.GL11Emulation'/>
   <inherits name='playn.PlayN'/>
   <inherits name='javax.Vecmath'/>
   <inherits name='com.BulletPhysics'/>
 
+ <!--
   <set-property name="compiler.stackMode" value="emulated" />
   <set-configuration-property name="compiler.emulatedStack.recordFileNames" value="true" />
 
-  <!--
+ 
     Optionally, enable gwt-log's advanced logging features:
 
       <inherits name="playn.logging.Enhanced" />

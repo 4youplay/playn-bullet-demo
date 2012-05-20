@@ -1,11 +1,11 @@
-package com.googlecode.playnbulletdemo.core.gl11;
+package com.googlecode.playnbulletdemo.core.gl;
 
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.nio.IntBuffer;
 import java.nio.ShortBuffer;
 
-import com.googlecode.playnbulletdemo.core.gl.MeshBuilder;
+import playn.gl11emulation.GL11;
 
 public class GL11Vbo {
   int vboHandle;

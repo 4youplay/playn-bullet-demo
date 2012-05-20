@@ -9,19 +9,19 @@ import java.util.HashMap;
 import playn.core.Image;
 import playn.core.PlayN;
 import playn.core.gl.GL20;
+import playn.gl11emulation.GL11;
+import playn.gl11emulation.GL11Emulation;
+import playn.gl11emulation.GLU;
 
 import com.bulletphysics.demos.opengl.IGL;
+import com.googlecode.playnbulletdemo.core.gl.GL11Vbo;
 import com.googlecode.playnbulletdemo.core.gl.Shapes;
 import com.googlecode.playnbulletdemo.core.gl.MeshBuilder;
 import com.googlecode.playnbulletdemo.core.gl.MeshBuilder.Mode;
-import com.googlecode.playnbulletdemo.core.gl11.GL11;
-import com.googlecode.playnbulletdemo.core.gl11.GL11FixedFunctionEmulation;
-import com.googlecode.playnbulletdemo.core.gl11.GLU;
-import com.googlecode.playnbulletdemo.core.gl11.GL11Vbo;
 
 public class PlayNIGL implements com.bulletphysics.demos.opengl.IGL {
 
-  GL11FixedFunctionEmulation gl;
+  GL11Emulation gl;
   MeshBuilder meshBuilder = new MeshBuilder(10000, MeshBuilder.OPTION_COLOR);
   MeshBuilder textBuilder = new MeshBuilder(10000, MeshBuilder.OPTION_TEXTURE);
   boolean tesselating;
@@ -39,7 +39,7 @@ public class PlayNIGL implements com.bulletphysics.demos.opengl.IGL {
   HashMap<String, Texture> textures = new HashMap<String, Texture>();
 
   public PlayNIGL(GL20 gl20) {
-    gl = new GL11FixedFunctionEmulation(gl20);
+    gl = new GL11Emulation(gl20);
     cube = new GL11Vbo(gl, Shapes.cube(new MeshBuilder(4 * 6)));
     
     meshBuilder.reset(Mode.TRIANGLES);
